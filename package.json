@@ -1,0 +1,20 @@
+{
+  "name": "skilly-backend",
+  "version": "1.0.0",
+  "description": "Backend ",
+  "main": "server.js",
+  "repository": "D:/FYP/skilly-backend/.git/",
+  "author": "Imran, Noman",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^8.5.1",
+    "express": "^4.17.1"
+  },
+  "scripts": {
+    "start": "nodemon server.js",
+    "start:prod": "SET NODE_ENV=PRODUCTION&&nodemon server.js"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0"
+  }
+}
