@@ -1,7 +1,7 @@
 exports.getAllCourses = (req, res) => {
   res.status(200).json({
     status: "success",
-    data: null,
+    data: "all courses list",
   });
 };
 

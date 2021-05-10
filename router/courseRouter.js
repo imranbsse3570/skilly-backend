@@ -6,7 +6,11 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(authController.protect, courseController.getAllCourses)
+  .get(
+    authController.protect,
+    authController.restrictTo("student"),
+    courseController.getAllCourses
+  )
   .post(courseController.addNewCourse);
 
 router

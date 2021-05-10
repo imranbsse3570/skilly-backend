@@ -256,3 +256,14 @@ exports.protect = async (req, res, next) => {
     });
   }
 };
+
+exports.restrictTo = (...roles) => (req, res, next) => {
+  const user = req.user;
+  if (!roles.includes(user.role)) {
+    return res.status(403).json({
+      status: "fail",
+      message: "Access Forbidden",
+    });
+  }
+  next();
+};
