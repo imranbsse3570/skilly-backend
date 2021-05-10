@@ -1,11 +1,12 @@
 const express = require("express");
 const courseController = require("../controller/courseController");
+const authController = require("../controller/authController");
 
 const router = express.Router();
 
 router
   .route("/")
-  .get(courseController.getAllCourses)
+  .get(authController.protect, courseController.getAllCourses)
   .post(courseController.addNewCourse);
 
 router
