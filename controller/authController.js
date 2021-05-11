@@ -6,6 +6,47 @@ const { decode } = require("punycode");
 const User = require("../model/userModel");
 const sendEmail = require("../util/sendEmail");
 
+const generatingJWTToken = (id) => {
+  return jwt.sign(
+    {
+      id,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    }
+  );
+};
+
+const setCookiesAndResponse = (user, res, statusCode) => {
+  // generating jwt
+  const token = generatingJWTToken(newUser._id);
+
+  const cookiesOption = {
+    httpOnly: true,
+    expires: new Date(
+      Date.now() + process.env.COOKIES_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+  };
+
+  if (process.env.NODE_ENV === "PRODUCTION") {
+    cookiesOption.secure = true;
+  }
+
+  res.cookie("jwt", token, cookiesOption);
+
+  newUser.password = undefined;
+  newUser.verifyAccountToken = undefined;
+
+  res.status(statusCode).json({
+    status: "success",
+    token,
+    data: {
+      user,
+    },
+  });
+};
+
 exports.signup = async (req, res, next) => {
   try {
     const { name, email, password, confirmPassword } = req.body;
@@ -25,16 +66,6 @@ exports.signup = async (req, res, next) => {
       });
     }
 
-    // generating jwt
-    const token = jwt.sign(
-      {
-        id: newUser._id,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: process.env.JWT_EXPIRES_IN,
-      }
-    );
     // creating verification token
     const verificationToken = newUser.createVerificationToken();
 
@@ -62,17 +93,7 @@ exports.signup = async (req, res, next) => {
         </html>`
     );
 
-    res.status(201).json({
-      status: "success",
-      token,
-      data: {
-        user: {
-          role: newUser.role,
-          name: newUser.name,
-          email: newUser.email,
-        },
-      },
-    });
+    setCookiesAndResponse(newUser, res, 201);
   } catch (err) {
     res.status(500).json({
       status: "Fail",
@@ -125,14 +146,7 @@ exports.login = async (req, res, next) => {
       throw Error("email or password is incorrect");
 
     //   checking for password
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN,
-    });
-
-    res.status(200).json({
-      status: "success",
-      token: token,
-    });
+    setCookiesAndResponse(undefined, res, 200);
   } catch (err) {
     res.status(500).json({
       status: "fail",
@@ -257,13 +271,35 @@ exports.protect = async (req, res, next) => {
   }
 };
 
-exports.restrictTo = (...roles) => (req, res, next) => {
-  const user = req.user;
-  if (!roles.includes(user.role)) {
-    return res.status(403).json({
+exports.restrictTo =
+  (...roles) =>
+  (req, res, next) => {
+    const user = req.user;
+    if (!roles.includes(user.role)) {
+      return res.status(403).json({
+        status: "fail",
+        message: "Access Forbidden",
+      });
+    }
+    next();
+  };
+
+exports.deleteMyAccount = async (req, res, next) => {
+  try {
+    const { password } = req.body;
+
+    const user = req.user;
+
+    if (!user.correctPassword(password, user.password)) {
+      throw new Error("Password is incorrect");
+    }
+
+    user.status = "deactivated";
+    await user.save({ validateBeforeSave: false });
+  } catch (err) {
+    res.status(500).json({
       status: "fail",
-      message: "Access Forbidden",
+      message: err.message,
     });
   }
-  next();
 };

@@ -11,6 +11,12 @@ router.get("/verifyUser/:verifyToken", authController.verifyUser);
 router.post("/forgotPassword", authController.forgotPassword);
 router.patch("/resetPassword/:token", authController.resetPassword);
 
+router.post(
+  "/deleteMe",
+  authController.protect,
+  authController.deleteMyAccount
+);
+
 router
   .route("/")
   .get(userController.getAllUsers)
