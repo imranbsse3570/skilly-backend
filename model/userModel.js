@@ -81,6 +81,11 @@ userSchema.pre("save", function (next) {
   next();
 });
 
+userSchema.pre(/^find/, function (next) {
+  this.find({ status: { $ne: "deactivated" } });
+  next();
+});
+
 userSchema.methods.passwordChangedAfter = function (createAt) {
   if (this.passwordChangedAt) {
     const changedAt = parseInt(this.passwordChangedAt / 1000, 10);

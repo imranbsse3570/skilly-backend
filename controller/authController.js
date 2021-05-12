@@ -1,26 +1,27 @@
 const crypto = require("crypto");
 
 const jwt = require("jsonwebtoken");
-const { decode } = require("punycode");
 
 const User = require("../model/userModel");
 const sendEmail = require("../util/sendEmail");
 
-const generatingJWTToken = (id) => {
+const generatingJWTToken = (id, expires) => {
+  const expiresIn = expires || process.env.JWT_EXPIRES_IN;
   return jwt.sign(
     {
       id,
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: process.env.JWT_EXPIRES_IN,
+      expiresIn,
     }
   );
 };
 
 const setCookiesAndResponse = (user, res, statusCode) => {
   // generating jwt
-  const token = generatingJWTToken(newUser._id);
+  const expires = statusCode === 204 ? 1000 : undefined;
+  const token = generatingJWTToken(user._id, expires);
 
   const cookiesOption = {
     httpOnly: true,
@@ -35,8 +36,14 @@ const setCookiesAndResponse = (user, res, statusCode) => {
 
   res.cookie("jwt", token, cookiesOption);
 
-  newUser.password = undefined;
-  newUser.verifyAccountToken = undefined;
+  if (statusCode === 204) {
+    user = undefined;
+  } else {
+    user.password = undefined;
+    user.verifyAccountToken = undefined;
+    user.resetPasswordToken = undefined;
+    user.resetTokenExpires = undefined;
+  }
 
   res.status(statusCode).json({
     status: "success",
@@ -61,9 +68,7 @@ exports.signup = async (req, res, next) => {
 
     // checking if user is created
     if (!newUser) {
-      return res.status(401).json({
-        status: "fail",
-      });
+      throw new Error("User already Exists");
     }
 
     // creating verification token
@@ -97,6 +102,7 @@ exports.signup = async (req, res, next) => {
   } catch (err) {
     res.status(500).json({
       status: "Fail",
+      message: err.message,
     });
   }
 };
@@ -146,7 +152,7 @@ exports.login = async (req, res, next) => {
       throw Error("email or password is incorrect");
 
     //   checking for password
-    setCookiesAndResponse(undefined, res, 200);
+    setCookiesAndResponse(user, res, 200);
   } catch (err) {
     res.status(500).json({
       status: "fail",
@@ -253,7 +259,7 @@ exports.protect = async (req, res, next) => {
 
     const payload = await jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findById(payload.id);
+    const user = await User.findById(payload.id).select("+password");
 
     if (!user) throw new Error("User Does not Exists");
 
@@ -265,7 +271,7 @@ exports.protect = async (req, res, next) => {
     next();
   } catch (err) {
     res.status(500).json({
-      status: "success",
+      status: "fail",
       message: err.message,
     });
   }
@@ -290,12 +296,16 @@ exports.deleteMyAccount = async (req, res, next) => {
 
     const user = req.user;
 
+    console.log(user.password);
+
     if (!user.correctPassword(password, user.password)) {
       throw new Error("Password is incorrect");
     }
 
     user.status = "deactivated";
     await user.save({ validateBeforeSave: false });
+
+    setCookiesAndResponse(user, res, 204);
   } catch (err) {
     res.status(500).json({
       status: "fail",
