@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const validator = require("validator");
 
 const userSchema = new mongoose.Schema({
+  photo: String,
   name: {
     type: String,
     minLength: 3,
@@ -77,11 +78,16 @@ userSchema.pre("save", async function (next) {
 
 userSchema.pre("save", function (next) {
   if (!this.isModified("password") || this.isNew) return next();
-  this.passwordChangedAt = new Date(Date.now() + 1000);
+  this.passwordChangedAt = new Date(Date.now());
   next();
 });
 
-userSchema.pre(/^find/, function (next) {
+userSchema.pre("find", function (next) {
+  this.find({ status: { $ne: "deactivated" } });
+  next();
+});
+
+userSchema.pre("findOne", function (next) {
   this.find({ status: { $ne: "deactivated" } });
   next();
 });
