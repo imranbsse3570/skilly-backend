@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["student", "instructor"],
+    enum: ["student", "instructor", "admin"],
     default: "student",
   },
   status: {
@@ -66,6 +66,16 @@ const userSchema = new mongoose.Schema({
   resetTokenExpires: {
     type: Date,
   },
+  numOfSubscribedCourses: {
+    type: Number,
+    default: 0,
+  },
+  courses: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Course",
+    },
+  ],
 });
 
 userSchema.pre("save", async function (next) {

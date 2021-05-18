@@ -1,9 +1,81 @@
 const mongoose = require("mongoose");
 
 const courseSchema = new mongoose.Schema({
-  name: {
+  title: {
+    type: String,
+    required: [true, "Course Title is required"],
+  },
+  description: {
+    type: String,
+    required: [true, "Course Description is required"],
+    minLength: 500,
+  },
+  summary: {
+    type: String,
+    required: [true, "Course Summary is required"],
+  },
+  requirements: {
+    type: String,
+    required: [true, "Course Requirement is required"],
+  },
+  createdAt: {
+    type: Date,
+    default: new Date(Date.now()),
+  },
+  slug: {
+    type: String,
+    unique: [true, "Slug must be unique"],
+  },
+  noOfReviews: {
+    type: Number,
+    default: 0,
+  },
+  rating: {
+    type: Number,
+    default: 1,
+    min: 1,
+    max: 5,
+  },
+  price: {
+    type: Number,
+    required: [true, "Price is required"],
+  },
+  isPublished: {
+    type: Boolean,
+    default: false,
+  },
+  language: {
+    type: String,
+    enum: ["English", "Urdu", "German", "Dutch", "Italian", "Hindi", "Spanish"],
+    default: "English",
+  },
+  image: {
     type: String,
   },
+  totalDuration: {
+    type: Number,
+  },
+  users: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+    },
+  ],
+  lectures: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Lecture",
+    },
+  ],
+  category: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Category",
+  },
+});
+
+courseSchema.pre(/^find/, function (next) {
+  this.populate("users").populate("lectures").populate("category");
+  next();
 });
 
 const Course = mongoose.model("Course", courseSchema);
