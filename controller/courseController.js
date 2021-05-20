@@ -6,18 +6,9 @@ exports.addNewCourse = catchAsync(async (req, res, next) => {
   const { title } = req.body;
   const courses = await Course.find({ title });
   req.body.slug = generateSlug(courses, title);
+  req.body.author = req.user._id;
   next();
 });
-
-exports.getCourse = (req, res, next) => {
-  req.params.id = req.params.courseId;
-  next();
-};
-
-exports.deleteCourse = (req, res, next) => {
-  req.params.id = req.params.courseId;
-  next();
-};
 
 exports.updateCourse = catchAsync(async (req, res, next) => {
   if (req.body.title) {
@@ -26,6 +17,10 @@ exports.updateCourse = catchAsync(async (req, res, next) => {
     req.body.slug = generateSlug(courses, title);
   }
 
-  req.params.id = req.params.courseId;
+  delete req.body.noOfReviews;
+  delete req.body.rating;
+  delete req.body.totalDuration;
+  delete req.body.category;
+
   next();
 });

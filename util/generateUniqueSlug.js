@@ -6,5 +6,11 @@ module.exports = (resource, title) => {
     replacement: "-",
   });
 
-  return resource.length > 0 ? `${slug}-${resource.length}` : slug;
+  if (resource.length > 0) {
+    const slugSplit = resource[resource.length - 1].slug.split("-");
+    const value = parseInt(slugSplit[slugSplit.length - 1]) || 0;
+    return `${slug}-${value + 1}`;
+  } else {
+    return slug;
+  }
 };

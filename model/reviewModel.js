@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const reviewSchema = new mongoose.Schema({
-  userId: {
+  author: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
   },
-  courseId: {
+  course: {
     type: mongoose.Schema.ObjectId,
     ref: "Course",
   },
@@ -30,8 +30,8 @@ const reviewSchema = new mongoose.Schema({
   },
 });
 
-reviewSchema.pre(/^find/, function (next) {
-  this.populate({ path: userId }).populate({ path: courseId });
+reviewSchema.pre("find", function (next) {
+  this.populate({ path: "user" }).populate({ path: "course" });
   next();
 });
 

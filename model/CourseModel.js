@@ -39,18 +39,32 @@ const courseSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  language: {
-    type: String,
-    enum: ["English", "Urdu", "German", "Dutch", "Italian", "Hindi", "Spanish"],
-    default: "English",
-  },
+  languages: [
+    {
+      type: String,
+      enum: [
+        "English",
+        "Urdu",
+        "German",
+        "Dutch",
+        "Italian",
+        "Hindi",
+        "Spanish",
+      ],
+      default: "English",
+    },
+  ],
   image: {
     type: String,
   },
   totalDuration: {
     type: Number,
   },
-  users: [
+  author: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+  },
+  students: [
     {
       type: mongoose.Schema.ObjectId,
       ref: "User",

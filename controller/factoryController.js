@@ -59,14 +59,12 @@ exports.deleteOne = (Model) =>
 
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
+    const doc = req.document;
+    Object.keys(req.body).forEach((value) => {
+      doc[value] = req.body[value];
     });
 
-    if (!doc) {
-      return next(new AppError("document with given id not found", 404));
-    }
+    await doc.save();
 
     res.status(202).json({
       status: "success",
@@ -74,4 +72,20 @@ exports.updateOne = (Model) =>
         doc,
       },
     });
+  });
+
+exports.validateUser = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.findById(req.params.id);
+    if (!doc) return next(new AppError("Doc not Found", 404));
+
+    console.log(req.user._id.toString() !== doc.author.toString());
+
+    if (req.user._id.toString() !== doc.author.toString()) {
+      if (req.user.role !== "admin") {
+        return next(new AppError("Access Forbidden", 403));
+      }
+    }
+    req.document = doc;
+    next();
   });

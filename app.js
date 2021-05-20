@@ -7,9 +7,9 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 
 const courseRouter = require("./router/courseRouter");
-const reviewRouter = require("./router/reviewRouter");
 const userRouter = require("./router/userRouter");
 const globalErrorHandler = require("./controller/errorController");
+const AppError = require("./util/appError");
 
 const app = express();
 
@@ -37,7 +37,6 @@ app.use(
 );
 
 app.use("/api/v1/courses", courseRouter);
-app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/users", userRouter);
 
 app.all("*", (req, res, next) => {

@@ -1,35 +1,23 @@
-exports.getAllReviews = (req, res) => {
-  res.status(200).json({
-    status: "success",
-    data: null,
-  });
-};
+const catchAsync = require("../util/catchAsync");
+const AppError = require("../util/appError");
+const Course = require("../model/CourseModel");
+const Review = require("../model/reviewModel");
 
-exports.addNewReview = (req, res) => {
-  console.log(req.body);
-  res.status(201).json({
-    status: "Success",
-    data: req.body,
-  });
-};
+exports.checkForCourse = catchAsync(async (req, res, next) => {
+  const course = await Course.findById(req.params.courseId);
+  if (!course) return next(new AppError("Course Not Found", 404));
+  next();
+});
 
-exports.getReview = (req, res) => {
-  res.status(200).json({
-    status: "success",
-    data: req.params.id,
-  });
-};
+exports.updatingRequestBody = catchAsync(async (req, res, next) => {
+  req.body.course = req.params.courseId;
+  req.body.author = req.user._id;
+  next();
+});
 
-exports.deleteReview = (req, res) => {
-  res.status(204).json({
-    status: "success",
-    data: req.params.id,
-  });
-};
+exports.checkValidUser = catchAsync(async (req, res, next) => {
+  req.body.author = req.user._id;
+  req.body.course = req.params.courseId;
 
-exports.updateReview = (req, res) => {
-  res.status(202).json({
-    status: "Success",
-    data: req.body,
-  });
-};
+  next();
+});
