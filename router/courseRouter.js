@@ -1,22 +1,20 @@
 const express = require("express");
 const courseController = require("../controller/courseController");
 const authController = require("../controller/authController");
+const factoryController = require("../controller/factoryController");
+const Course = require("../model/CourseModel");
 
 const router = express.Router();
 
 router
   .route("/")
-  .get(
-    authController.protect,
-    authController.restrictTo("student"),
-    courseController.getAllCourses
-  )
-  .post(courseController.addNewCourse);
+  .get(factoryController.getAll(Course))
+  .post(courseController.addNewCourse, factoryController.create(Course));
 
 router
-  .route("/:id")
-  .get(courseController.getCourse)
-  .delete(courseController.deleteCourse)
-  .patch(courseController.updateCourse);
+  .route("/:courseId")
+  .get(courseController.getCourse, factoryController.getOne(Course))
+  .delete(courseController.deleteCourse, factoryController.deleteOne(Course))
+  .patch(courseController.updateCourse, factoryController.updateOne(Course));
 
 module.exports = router;

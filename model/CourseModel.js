@@ -8,7 +8,6 @@ const courseSchema = new mongoose.Schema({
   description: {
     type: String,
     required: [true, "Course Description is required"],
-    minLength: 500,
   },
   summary: {
     type: String,
@@ -21,10 +20,6 @@ const courseSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: new Date(Date.now()),
-  },
-  slug: {
-    type: String,
-    unique: [true, "Slug must be unique"],
   },
   noOfReviews: {
     type: Number,
@@ -62,14 +57,18 @@ const courseSchema = new mongoose.Schema({
     },
   ],
   lectures: [
-    {
-      type: mongoose.Schema.ObjectId,
-      ref: "Lecture",
-    },
+    // {
+    //   type: mongoose.Schema.ObjectId,
+    //   ref: "Lecture",
+    // },
   ],
   category: {
     type: mongoose.Schema.ObjectId,
     ref: "Category",
+  },
+  slug: {
+    type: String,
+    unique: true,
   },
 });
 

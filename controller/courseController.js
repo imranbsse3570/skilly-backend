@@ -1,35 +1,31 @@
-exports.getAllCourses = (req, res) => {
-  res.status(200).json({
-    status: "success",
-    data: "all courses list",
-  });
+const catchAsync = require("../util/catchAsync");
+const Course = require("../model/CourseModel");
+const generateSlug = require("../util/generateUniqueSlug");
+
+exports.addNewCourse = catchAsync(async (req, res, next) => {
+  const { title } = req.body;
+  const courses = await Course.find({ title });
+  req.body.slug = generateSlug(courses, title);
+  next();
+});
+
+exports.getCourse = (req, res, next) => {
+  req.params.id = req.params.courseId;
+  next();
 };
 
-exports.addNewCourse = (req, res) => {
-  console.log(req.body);
-  res.status(201).json({
-    status: "Success",
-    data: req.body,
-  });
+exports.deleteCourse = (req, res, next) => {
+  req.params.id = req.params.courseId;
+  next();
 };
 
-exports.getCourse = (req, res) => {
-  res.status(200).json({
-    status: "success",
-    data: req.params.id,
-  });
-};
+exports.updateCourse = catchAsync(async (req, res, next) => {
+  if (req.body.title) {
+    const { title } = req.body;
+    const courses = await Course.find({ title });
+    req.body.slug = generateSlug(courses, title);
+  }
 
-exports.deleteCourse = (req, res) => {
-  res.status(204).json({
-    status: "success",
-    data: req.params.id,
-  });
-};
-
-exports.updateCourse = (req, res) => {
-  res.status(202).json({
-    status: "Success",
-    data: req.body,
-  });
-};
+  req.params.id = req.params.courseId;
+  next();
+});
