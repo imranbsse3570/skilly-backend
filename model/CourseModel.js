@@ -28,8 +28,9 @@ const courseSchema = new mongoose.Schema({
   rating: {
     type: Number,
     default: 1,
-    min: 1,
-    max: 5,
+    min: [1, "Minimum Review must be 1"],
+    max: [5, "Maximum review must be 5"],
+    set: (value) => Math.round(value * 10) / 10,
   },
   price: {
     type: Number,
@@ -71,10 +72,10 @@ const courseSchema = new mongoose.Schema({
     },
   ],
   lectures: [
-    // {
-    //   type: mongoose.Schema.ObjectId,
-    //   ref: "Lecture",
-    // },
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Lecture",
+    },
   ],
   category: {
     type: mongoose.Schema.ObjectId,

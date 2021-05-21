@@ -79,8 +79,6 @@ exports.validateUser = (Model) =>
     const doc = await Model.findById(req.params.id);
     if (!doc) return next(new AppError("Doc not Found", 404));
 
-    console.log(req.user._id.toString() !== doc.author.toString());
-
     if (req.user._id.toString() !== doc.author.toString()) {
       if (req.user.role !== "admin") {
         return next(new AppError("Access Forbidden", 403));
@@ -89,3 +87,9 @@ exports.validateUser = (Model) =>
     req.document = doc;
     next();
   });
+
+exports.checkForCourse = catchAsync(async (req, res, next) => {
+  const course = await Course.findById(req.params.courseId);
+  if (!course) return next(new AppError("Course Not Found", 404));
+  next();
+});

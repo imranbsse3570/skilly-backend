@@ -2,13 +2,15 @@ const express = require("express");
 const courseController = require("../controller/courseController");
 const authController = require("../controller/authController");
 const factoryController = require("../controller/factoryController");
-const Course = require("../model/CourseModel");
+const Course = require("../model/courseModel");
 
 const reviewRouter = require("../router/reviewRouter");
+const lectureRouter = require("../router/lectureRouter");
 
 const router = express.Router();
 
 router.use("/:courseId/reviews", reviewRouter);
+router.use("/:courseId/lectures", lectureRouter);
 
 router
   .route("/")

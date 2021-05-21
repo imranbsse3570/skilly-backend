@@ -1,5 +1,5 @@
 const catchAsync = require("../util/catchAsync");
-const Course = require("../model/CourseModel");
+const Course = require("../model/courseModel");
 const generateSlug = require("../util/generateUniqueSlug");
 
 exports.addNewCourse = catchAsync(async (req, res, next) => {

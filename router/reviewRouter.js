@@ -9,29 +9,29 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route("/")
-  .get(reviewController.checkForCourse, factoryController.getAll(Review))
+  .get(factoryController.checkForCourse, factoryController.getAll(Review))
   .post(
     authController.protect,
     authController.restrictTo("student"),
-    reviewController.checkForCourse,
+    factoryController.checkForCourse,
     reviewController.updatingRequestBody,
     factoryController.create(Review)
   );
 
 router
   .route("/:id")
-  .get(factoryController.getOne(Review))
+  .get(factoryController.checkForCourse, factoryController.getOne(Review))
   .delete(
     authController.protect,
     authController.restrictTo("student", "admin"),
-    reviewController.checkForCourse,
+    factoryController.checkForCourse,
     factoryController.validateUser(Review),
     factoryController.deleteOne(Review)
   )
   .patch(
     authController.protect,
     authController.restrictTo("student", "admin"),
-    reviewController.checkForCourse,
+    factoryController.checkForCourse,
     factoryController.validateUser(Review),
     reviewController.checkValidUser,
     factoryController.updateOne(Review)

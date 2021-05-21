@@ -32,6 +32,10 @@ const lectureSchema = new mongoose.Schema({
     type: String,
     required: [true, "Video source is required"],
   },
+  isLocked: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const Lecture = mongoose.model("Lecture", lectureSchema);
