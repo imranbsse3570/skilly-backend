@@ -31,6 +31,7 @@ const lectureSchema = new mongoose.Schema({
   source: {
     type: String,
     required: [true, "Video source is required"],
+    unique: [true, "Source of the video must be unique"],
   },
   isLocked: {
     type: Boolean,

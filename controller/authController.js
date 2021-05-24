@@ -2,11 +2,36 @@ const crypto = require("crypto");
 
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
 
 const User = require("../model/userModel");
 const sendEmail = require("../util/sendEmail");
 const catchAsync = require("../util/catchAsync");
 const AppError = require("../util/appError");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/users");
+  },
+  filename: (req, file, cb) => {
+    const user = req.user;
+    const ext = file.mimetype.split("/")[1];
+    cb(null, `user-${user._id.toString()}-${Date.now()}.${ext}`);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new AppError("File type not supported please upload an image", 400));
+  }
+};
+
+exports.uploadProfilePicture = multer({
+  storage,
+  fileFilter,
+});
 
 const generatingJWTToken = (id, expires) => {
   const expiresIn = expires || process.env.JWT_EXPIRES_IN;
@@ -352,11 +377,15 @@ exports.updateMyEmail = catchAsync(async (req, res, next) => {
 });
 
 exports.updateMe = catchAsync(async (req, res, next) => {
-  const { name, photo } = req.body;
+  const { name } = req.body;
 
   const user = req.user;
 
-  user.photo = photo;
+  if (req.file) {
+    const photo = req.file.filename;
+    user.photo = photo;
+  }
+
   user.name = name;
 
   await user.save({ validateBeforeSave: false });

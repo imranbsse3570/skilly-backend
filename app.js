@@ -36,6 +36,8 @@ app.use(
   })
 );
 
+app.use(express.static("uploads"));
+
 app.use("/api/v1/courses", courseRouter);
 app.use("/api/v1/users", userRouter);
 

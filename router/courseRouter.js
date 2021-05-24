@@ -10,7 +10,7 @@ const lectureRouter = require("../router/lectureRouter");
 const router = express.Router();
 
 router.use("/:courseId/reviews", reviewRouter);
-router.use("/:courseId/lectures", lectureRouter);
+router.use("/:id/lectures", lectureRouter);
 
 router
   .route("/")

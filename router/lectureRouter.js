@@ -15,9 +15,10 @@ router
     authController.protect,
     authController.restrictTo("admin", "instructor"),
     factoryController.validateUser(Course),
+    lectureController.lectureUploader.single("lectureVideo"),
     lectureController.addNewLectures
   );
 
-router.route("/:id").get().patch().delete();
+router.route("/:id").get(lectureController.gettingCourseData).patch().delete();
 
 module.exports = router;

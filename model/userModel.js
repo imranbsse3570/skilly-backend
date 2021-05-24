@@ -4,7 +4,10 @@ const crypto = require("crypto");
 const validator = require("validator");
 
 const userSchema = new mongoose.Schema({
-  photo: String,
+  photo: {
+    type: String,
+    default: "default.jpeg",
+  },
   name: {
     type: String,
     minLength: 3,
