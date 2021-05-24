@@ -21,6 +21,7 @@ router.patch("/updateMyEmail", authController.updateMyEmail);
 router.patch(
   "/updateMe",
   authController.uploadProfilePicture.single("photo"),
+  authController.reFormatPicture,
   authController.updateMe
 );
 router.get("/myProfile", authController.myProfile, userController.getUser);

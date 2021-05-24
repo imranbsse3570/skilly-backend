@@ -3,22 +3,25 @@ const crypto = require("crypto");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
+const sharp = require("sharp");
 
 const User = require("../model/userModel");
 const sendEmail = require("../util/sendEmail");
 const catchAsync = require("../util/catchAsync");
 const AppError = require("../util/appError");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/users");
-  },
-  filename: (req, file, cb) => {
-    const user = req.user;
-    const ext = file.mimetype.split("/")[1];
-    cb(null, `user-${user._id.toString()}-${Date.now()}.${ext}`);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "uploads/users");
+//   },
+//   filename: (req, file, cb) => {
+//     const user = req.user;
+//     const ext = file.mimetype.split("/")[1];
+//     cb(null, `user-${user._id.toString()}-${Date.now()}.${ext}`);
+//   },
+// });
+
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
@@ -31,6 +34,15 @@ const fileFilter = (req, file, cb) => {
 exports.uploadProfilePicture = multer({
   storage,
   fileFilter,
+});
+
+exports.reFormatPicture = catchAsync(async (req, res, next) => {
+  if (req.file) {
+    const user = req.user;
+    req.filename = `user-${user._id.toString()}-${Date.now()}.png`;
+    await sharp(req.file.buffer).png().toFile(`uploads/users/${req.filename}`);
+  }
+  next();
 });
 
 const generatingJWTToken = (id, expires) => {
@@ -248,7 +260,12 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 exports.protect = catchAsync(async (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization || !authorization.startsWith("Bearer")) {
-    return next(new AppError("Token not found or Invalid", 401));
+    return next(
+      new AppError(
+        "Client Not Authenticated Please login to view this resource",
+        401
+      )
+    );
   }
 
   const token = authorization.split(" ")[1];
@@ -381,8 +398,8 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
   const user = req.user;
 
-  if (req.file) {
-    const photo = req.file.filename;
+  if (req.filename) {
+    const photo = req.filename;
     user.photo = photo;
   }
 

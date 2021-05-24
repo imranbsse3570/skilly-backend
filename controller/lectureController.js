@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const fs = require("fs");
 
+const path = require("path");
 const multer = require("multer");
 
 const catchAsync = require("../util/catchAsync");
@@ -51,7 +52,7 @@ const fileFilter = (req, file, cb) => {
 exports.lectureUploader = multer({ storage: storage, fileFilter: fileFilter });
 
 exports.gettingCourseData = catchAsync(async (req, res, next) => {
-  const course = await Course.findById(req.params.courseId);
+  const course = await Course.findById(req.params.id);
   if (!course) {
     return next(new AppError("Course Not found", 404));
   }
@@ -91,8 +92,6 @@ exports.addNewLectures = catchAsync(async (req, res, next) => {
 
   const newLecture = await Lecture.create(req.body);
 
-  console.log(req.document);
-
   course.lectures = [...req.document.lectures, newLecture._id];
   await course.save({ validateBeforeSave: false });
 
@@ -119,4 +118,84 @@ exports.getLectureById = (req, res, next) => {
   } else {
     next(new AppError("Lecture Not Found", 404));
   }
+};
+
+exports.checkingLecture = catchAsync(async (req, res, next) => {
+  const { lectureFileName } = req.params;
+
+  const lecture = await Lecture.findOne({ source: lectureFileName });
+
+  if (!lecture) {
+    return next(
+      new AppError("Lecture not found please provide valid address", 404)
+    );
+  }
+
+  req.lecture = lecture;
+
+  next();
+});
+
+exports.checkForLockedLectures = (req, res, next) => {
+  const { lectureFileName, id: courseId } = req.params;
+  const lecture = req.lecture;
+  if (!lecture.isLocked) {
+    const filePath = path.resolve(
+      `./uploads/lectures/${courseId}/${lectureFileName}`
+    );
+    res.sendFile(filePath);
+  } else {
+    next();
+  }
+};
+
+exports.checkForLockedLecturesAndDownload = (req, res, next) => {
+  const { lectureFileName, id: courseId } = req.params;
+  const lecture = req.lecture;
+  if (!lecture.isLocked) {
+    const filePath = path.resolve(
+      `./uploads/lectures/${courseId}/${lectureFileName}`
+    );
+    res.download(filePath, (err) =>
+      next(new AppError("Error in downloading File", 500))
+    );
+  } else {
+    next();
+  }
+};
+
+exports.checkingAccessToLectures = (req, res, next) => {
+  const course = req.course;
+  const user = req.user;
+
+  if (course.author.toString() !== user._id.toString()) {
+    if (user.role !== "admin") {
+      if (!user.courses.includes(course._id)) {
+        return next(
+          new AppError(
+            "User is not allowed to access the course. Please purchase the course inorder to access this resource",
+            401
+          )
+        );
+      }
+    }
+  }
+
+  next();
+};
+
+exports.sendingLectureToClient = (req, res, next) => {
+  const { lectureFileName, id: courseId } = req.params;
+  const filePath = path.resolve(
+    `./uploads/lectures/${courseId}/${lectureFileName}`
+  );
+  res.sendFile(filePath);
+};
+
+exports.downloadLectureToClient = (req, res, next) => {
+  const { lectureFileName, id: courseId } = req.params;
+  const filePath = path.resolve(
+    `./uploads/lectures/${courseId}/${lectureFileName}`
+  );
+  res.download(filePath);
 };

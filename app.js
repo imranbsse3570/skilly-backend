@@ -9,6 +9,7 @@ const hpp = require("hpp");
 const courseRouter = require("./router/courseRouter");
 const userRouter = require("./router/userRouter");
 const globalErrorHandler = require("./controller/errorController");
+const filesRouter = require("./router/filesRouter");
 const AppError = require("./util/appError");
 
 const app = express();
@@ -36,7 +37,7 @@ app.use(
   })
 );
 
-app.use(express.static("uploads"));
+app.use("/files", filesRouter);
 
 app.use("/api/v1/courses", courseRouter);
 app.use("/api/v1/users", userRouter);
