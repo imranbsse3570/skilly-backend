@@ -8,6 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "dotenv": "^8.5.1",
     "express": "^4.17.1",
     "express-mongo-sanitize": "^2.1.0",
@@ -21,6 +22,7 @@
     "path": "^0.12.7",
     "sharp": "^0.28.2",
     "slugify": "^1.5.3",
+    "stripe": "^8.149.0",
     "validator": "^13.6.0",
     "xss-clean": "^0.1.1"
   },

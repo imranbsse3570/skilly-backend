@@ -9,6 +9,7 @@ const User = require("../model/userModel");
 const sendEmail = require("../util/sendEmail");
 const catchAsync = require("../util/catchAsync");
 const AppError = require("../util/appError");
+const deleteFile = require("../util/deleteFile");
 
 // const storage = multer.diskStorage({
 //   destination: (req, file, cb) => {
@@ -399,6 +400,9 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   const user = req.user;
 
   if (req.filename) {
+    if (user.photo) {
+      await deleteFile(`uploads/users/${user.photo}`);
+    }
     const photo = req.filename;
     user.photo = photo;
   }

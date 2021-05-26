@@ -2,15 +2,26 @@ const express = require("express");
 const courseController = require("../controller/courseController");
 const authController = require("../controller/authController");
 const factoryController = require("../controller/factoryController");
+const paymentController = require("../controller/paymentController");
 const Course = require("../model/courseModel");
 
 const reviewRouter = require("../router/reviewRouter");
 const lectureRouter = require("../router/lectureRouter");
+const AppError = require("../util/appError");
 
 const router = express.Router();
 
 router.use("/:courseId/reviews", reviewRouter);
 router.use("/:id/lectures", lectureRouter);
+
+router.get(
+  "/:courseId/checkout",
+  authController.protect,
+  paymentController.checkingUserValidityForCheckout,
+  paymentController.createCheckoutSession
+);
+
+// router.get("/:courseId/payout", paymentController.handlePaymentToInstructor);
 
 router
   .route("/")

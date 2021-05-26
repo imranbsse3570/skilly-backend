@@ -88,7 +88,7 @@ const courseSchema = new mongoose.Schema({
 });
 
 courseSchema.pre(/^find/, function (next) {
-  this.populate("users").populate("lectures").populate("category");
+  this.populate("users").populate("category").populate("lectures");
   next();
 });
 

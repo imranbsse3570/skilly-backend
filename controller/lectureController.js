@@ -8,7 +8,7 @@ const catchAsync = require("../util/catchAsync");
 const Lecture = require("../model/lectureModel");
 const Course = require("../model/courseModel");
 const AppError = require("../util/appError");
-const APIFeatures = require("../util/apiFeatures");
+const deleteFile = require("../util/deleteFile");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -32,7 +32,6 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  console.log(file);
   if (file.mimetype.startsWith("video")) {
     if (file.mimetype.endsWith("mp4")) {
       cb(null, true);
@@ -91,8 +90,9 @@ exports.addNewLectures = catchAsync(async (req, res, next) => {
   req.body.source = req.file.filename;
 
   const newLecture = await Lecture.create(req.body);
-
+  const course = req.document;
   course.lectures = [...req.document.lectures, newLecture._id];
+
   await course.save({ validateBeforeSave: false });
 
   res.status(201).json({
@@ -104,20 +104,20 @@ exports.addNewLectures = catchAsync(async (req, res, next) => {
 });
 
 exports.getLectureById = (req, res, next) => {
-  const lecture = req.course.lecturesfilter(
-    (value) => value._id === req.params.id
+  const lecture = req.course.lectures.filter(
+    (value) => value._id.toString() === req.params.lectureId.toString()
   );
 
-  if (lecture) {
-    res.status(200).json({
-      status: "success",
-      data: {
-        doc: lecture,
-      },
-    });
-  } else {
-    next(new AppError("Lecture Not Found", 404));
+  if (lecture.length === 0) {
+    return next(new AppError("Lecture Not Found", 404));
   }
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      doc: lecture[0],
+    },
+  });
 };
 
 exports.checkingLecture = catchAsync(async (req, res, next) => {
@@ -192,19 +192,15 @@ exports.sendingLectureToClient = (req, res, next) => {
     res.status(400).send("Requires Range header");
   }
 
-  // get video stats (about 61MB)
   const videoPath = path.resolve(
     `./uploads/lectures/${courseId}/${lectureFileName}`
   );
   const videoSize = fs.statSync(videoPath).size;
 
-  // Parse Range
-  // Example: "bytes=32324-"
-  const CHUNK_SIZE = 10 ** 6; // 1MB
+  const CHUNK_SIZE = 10 ** 6;
   const start = Number(range.replace(/\D/g, ""));
   const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
 
-  // Create headers
   const contentLength = end - start + 1;
   const headers = {
     "Content-Range": `bytes ${start}-${end}/${videoSize}`,
@@ -213,13 +209,10 @@ exports.sendingLectureToClient = (req, res, next) => {
     "Content-Type": "video/mp4",
   };
 
-  // HTTP Status 206 for Partial Content
   res.writeHead(206, headers);
 
-  // create video read stream for this particular chunk
   const videoStream = fs.createReadStream(videoPath, { start, end });
 
-  // Stream the video chunk to the client
   videoStream.pipe(res);
 };
 
@@ -230,3 +223,85 @@ exports.downloadLectureToClient = (req, res, next) => {
   );
   res.download(filePath);
 };
+
+exports.deleteLecture = async (req, res, next) => {
+  const course = req.document;
+
+  let lectureFound = false;
+  course.lectures = course.lectures
+    .filter((lecture) => {
+      if (lecture._id.toString() === req.params.lectureId.toString()) {
+        lectureFound = true;
+        return false;
+      } else {
+        return true;
+      }
+    })
+    .map((lecture) => {
+      return lecture._id;
+    });
+
+  if (!lectureFound) {
+    return next(new AppError("Lecture Not Found in the course", 404));
+  }
+
+  const lecture = await Lecture.findByIdAndDelete(req.params.lectureId);
+
+  if (!lecture) {
+    return next(new AppError("Lecture not found ", 404));
+  }
+
+  await deleteFile(`./uploads/lectures/${course._id}/${lecture.source}`);
+
+  await course.save();
+
+  res.status(204).json({
+    message: "lecture successfully deleted",
+  });
+};
+
+exports.checkingForTheLectureInCourse = (req, res, next) => {
+  const course = req.document;
+
+  let lectureFound = undefined;
+  course.lectures.forEach((lecture) => {
+    if (lecture._id.toString() === req.params.lectureId) {
+      lectureFound = lecture;
+    }
+  });
+
+  if (!lectureFound) {
+    return next(new AppError("Lecture not found in course", 404));
+  }
+
+  req.lectureFound = lectureFound;
+
+  next();
+};
+
+exports.updateLecture = catchAsync(async (req, res, next) => {
+  const course = req.document;
+
+  if (req.file) {
+    await deleteFile(
+      `./uploads/lectures/${course._id}/${req.lectureFound.source}`
+    );
+    req.body.source = req.file.filename;
+  }
+
+  const lecture = await Lecture.findByIdAndUpdate(
+    req.params.lectureId,
+    req.body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  res.status(202).json({
+    status: "success",
+    data: {
+      lecture,
+    },
+  });
+});

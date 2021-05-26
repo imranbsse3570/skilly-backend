@@ -19,6 +19,22 @@ router
     lectureController.addNewLectures
   );
 
-router.route("/:id").get(lectureController.gettingCourseData).patch().delete();
+router
+  .route("/:lectureId")
+  .get(lectureController.gettingCourseData, lectureController.getLectureById)
+  .patch(
+    authController.protect,
+    authController.restrictTo("admin", "instructor"),
+    factoryController.validateUser(Course),
+    lectureController.checkingForTheLectureInCourse,
+    lectureController.lectureUploader.single("lectureVideo"),
+    lectureController.updateLecture
+  )
+  .delete(
+    authController.protect,
+    authController.restrictTo("admin", "instructor"),
+    factoryController.validateUser(Course),
+    lectureController.deleteLecture
+  );
 
 module.exports = router;

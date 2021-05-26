@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
+const cors = require("cors");
 
 const courseRouter = require("./router/courseRouter");
 const userRouter = require("./router/userRouter");
@@ -15,6 +16,8 @@ const AppError = require("./util/appError");
 const app = express();
 
 app.use(helmet());
+
+app.use(cors());
 
 if (process.env.NODE_ENV === "DEVELOPMENT") app.use(morgan("dev"));
 
