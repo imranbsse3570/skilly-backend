@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <!-- CSS only -->
+
+</head>
+
+<body>
+    <div class="container pm-certificate-container">
+        <div class="outer-border">
+
+            <div class="inner-border">
+
+                <div class="pm-certificate-border col-xs-12">
+                    <div class="row pm-certificate-header">
+                        <div class="pm-certificate-title cursive col-xs-12 text-center">
+                            <h2>Skilly Online Learning Platform</h2>
+                        </div>
+                    </div>
+
+                    <div class="row pm-certificate-body">
+
+                        <div class="pm-certificate-block">
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <!-- LEAVE EMPTY -->
+                                    </div>
+                                    <div class="pm-certificate-name margin-0 col-xs-8 text-center">
+                                        <span class="pm-name-text bold">{{name}}</span>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <!-- LEAVE EMPTY -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <!-- LEAVE EMPTY -->
+                                    </div>
+                                    <div class="pm-earned col-xs-8 text-center">
+                                        <span class="pm-earned-text padding-0 block cursive">has passed</span>
+                                        <span class="pm-credits-text block bold sans">{{courseName}}</span>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <!-- LEAVE EMPTY -->
+                                    </div>
+                                    <div class="col-xs-12"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <!-- LEAVE EMPTY -->
+                                    </div>
+                                    <div class="pm-course-title col-xs-8 text-center">
+                                        <span class="pm-earned-text block cursive">while completing the training
+                                            of</span>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <!-- LEAVE EMPTY -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <!-- LEAVE EMPTY -->
+                                    </div>
+                                    <div class="pm-course-title  col-xs-8 text-center">
+                                        <span class="pm-credits-text block bold sans">{{hours}} hours</span>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <!-- LEAVE EMPTY -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="pm-certificate-footer">
+                                    <div class="col-lg-4 pm-certified col-xs-4 text-center">
+                                        <span class="pm-credits-text block sans">Instructor</span>
+                                        <span class="pm-empty-space block underline">{{author}}</span>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <!-- LEAVE EMPTY -->
+                                    </div>
+                                    <div class="col-lg-4 pm-certified col-xs-4 text-center">
+                                        <span class="pm-credits-text block sans">Date Completed</span>
+                                        <span class="pm-empty-space block underline">{{date}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <style>
+        @import url("https://fonts.googleapis.com/css?family=Open+Sans|Pinyon+Script|Rochester");
+
+        :root {
+            --bs-blue: #0d6efd;
+            --bs-indigo: #6610f2;
+            --bs-purple: #6f42c1;
+            --bs-pink: #d63384;
+            --bs-red: #dc3545;
+            --bs-orange: #fd7e14;
+            --bs-yellow: #ffc107;
+            --bs-green: #198754;
+            --bs-teal: #20c997;
+            --bs-cyan: #0dcaf0;
+            --bs-white: #fff;
+            --bs-gray: #6c757d;
+            --bs-gray-dark: #343a40;
+            --bs-primary: #0d6efd;
+            --bs-secondary: #6c757d;
+            --bs-success: #198754;
+            --bs-info: #0dcaf0;
+            --bs-warning: #ffc107;
+            --bs-danger: #dc3545;
+            --bs-light: #f8f9fa;
+            --bs-dark: #212529;
+            --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto,
+                "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
+                "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
+                "Liberation Mono", "Courier New", monospace;
+            --bs-gradient: linear-gradient(180deg,
+                    rgba(255, 255, 255, 0.15),
+                    rgba(255, 255, 255, 0));
+        }
+
+        *,
+        ::after,
+        ::before {
+            box-sizing: border-box;
+        }
+
+        @media (prefers-reduced-motion: no-preference) {
+            :root {
+                scroll-behavior: smooth;
+            }
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--bs-font-sans-serif);
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #212529;
+            background-color: #fff;
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .cursive {
+            font-family: "Pinyon Script", cursive;
+        }
+
+        .sans {
+            font-family: "Open Sans", sans-serif;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .block {
+            display: block;
+        }
+
+        .underline {
+            border-bottom: 1px solid #777;
+            padding: 5px;
+            margin-bottom: 15px;
+        }
+
+        .margin-0 {
+            margin: 0;
+        }
+
+        .padding-0 {
+            padding: 0;
+        }
+
+        .pm-empty-space {
+            padding-top: 15px;
+        }
+
+        body {
+            padding: 20px 0;
+            background: #ccc;
+        }
+
+        .pm-certificate-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            padding: 30px;
+            color: #333;
+            font-family: "Open Sans", sans-serif;
+        }
+
+        .pm-certificate-container .outer-border {
+            width: 100%;
+            height: 100%;
+            top: 50%;
+            padding: 25px;
+            border: 2px solid #fff;
+        }
+
+        .pm-certificate-container .inner-border {
+            width: 100%;
+            height: 100%;
+            padding: 3px;
+            border: 2px solid #fff;
+        }
+
+        .pm-certificate-container .pm-certificate-border {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            border: 1px solid #e1e5f0;
+            background-color: rgba(255, 255, 255, 0.7);
+            background-image: none;
+        }
+
+        .pm-certificate-container .pm-certificate-border .pm-certificate-block {
+            width: 650px;
+            height: 200px;
+            position: relative;
+            left: 50%;
+            margin-left: -325px;
+            top: 70px;
+            margin-top: 0;
+        }
+
+        .pm-certificate-container .pm-certificate-border .pm-certificate-header {
+            margin-bottom: 10px;
+        }
+
+        .pm-certificate-container .pm-certificate-border .pm-certificate-title {
+            position: relative;
+            top: 40px;
+        }
+
+        .pm-certificate-container .pm-certificate-border .pm-certificate-title h2 {
+            font-size: 50px !important;
+            padding: 50px;
+            font-weight: bold;
+        }
+
+        .pm-certificate-container .pm-certificate-border .pm-certificate-body {
+            padding: 20px;
+        }
+
+        .pm-certificate-container .pm-certificate-border .pm-certificate-body .pm-name-text {
+            font-size: 20px;
+        }
+
+        .pm-certificate-container .pm-certificate-border .pm-earned {
+            margin: 15px 0 20px;
+        }
+
+        .pm-certificate-container .pm-certificate-border .pm-earned .pm-earned-text {
+            font-size: 20px;
+        }
+
+        .pm-certificate-container .pm-certificate-border .pm-earned .pm-credits-text {
+            font-size: 15px;
+        }
+
+        .pm-certificate-container .pm-certificate-border .pm-course-title .pm-earned-text {
+            font-size: 20px;
+        }
+
+        .pm-certificate-container .pm-certificate-border .pm-course-title .pm-credits-text {
+            font-size: 15px;
+        }
+
+        .pm-certificate-container .pm-certificate-border .pm-certified {
+            font-size: 12px;
+        }
+
+        .pm-certificate-container .pm-certificate-border .pm-certified .underline {
+            margin-bottom: 5px;
+        }
+
+        .pm-certificate-container .pm-certificate-border .pm-certificate-footer {
+            width: 650px;
+            display: flex;
+            height: 100px;
+            position: relative;
+            left: 50%;
+            margin-left: -325px;
+            bottom: -105px;
+        }
+
+        .row {
+            --bs-gutter-x: 1.5rem;
+            --bs-gutter-y: 0;
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: calc(var(--bs-gutter-y) * -1);
+            margin-right: calc(var(--bs-gutter-x) / -2);
+            margin-left: calc(var(--bs-gutter-x) / -2);
+        }
+
+        .row>* {
+            flex-shrink: 0;
+            width: 100%;
+            max-width: 100%;
+            padding-right: calc(var(--bs-gutter-x) / 2);
+            padding-left: calc(var(--bs-gutter-x) / 2);
+            margin-top: var(--bs-gutter-y);
+        }
+
+        .container,
+        .container-fluid,
+        .container-lg,
+        .container-md,
+        .container-sm,
+        .container-xl,
+        .container-xxl {
+            width: 100%;
+            padding: var(--bs-gutter-x, 0.75rem);
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        @media (min-width: 576px) {
+
+            .container,
+            .container-sm {
+                max-width: 540px;
+            }
+        }
+
+        .h1,
+        .h2,
+        .h3,
+        .h4,
+        .h5,
+        .h6,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        .col-lg-4 {
+            width: 33.333%;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 100%;
+            height: 100%;
+        }
+
+        body {
+            height: 207mm;
+            min-width: 297mm;
+            padding: 3mm;
+            background-image: url('https://images.alphacoders.com/758/thumb-1920-75893.jpg');
+            background-size: cover;
+        }
+    </style>
+</body>
+
+</html>
