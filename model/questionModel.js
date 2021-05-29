@@ -9,7 +9,7 @@ const questionSchema = new mongoose.Schema({
     type: String,
     required: [true, "Body of the Question is required"],
   },
-  courseId: {
+  course: {
     type: mongoose.Schema.ObjectId,
     ref: "Course",
   },
@@ -17,10 +17,10 @@ const questionSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  lectureId: {
-    type: mongoose.Schema.ObjectId,
-    ref: "Lecture",
-  },
+  // lecture: {
+  //   type: mongoose.Schema.ObjectId,
+  //   ref: "Lecture",
+  // },
   replies: [
     {
       type: mongoose.Schema.ObjectId,
@@ -31,7 +31,7 @@ const questionSchema = new mongoose.Schema({
     type: String,
     required: [true, "Title of the question is required"],
   },
-  userId: {
+  user: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
   },
@@ -42,9 +42,10 @@ const questionSchema = new mongoose.Schema({
 });
 
 questionSchema.pre(/^find/, function (next) {
-  this.populate({ path: "userId" }).populate({ path: "courseId" }).populate({
-    path: "replies",
-  });
+  this.populate({ path: "user" });
+  //   .populate({
+  //   path: "replies",
+  // });
   next();
 });
 

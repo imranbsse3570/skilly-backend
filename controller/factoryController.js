@@ -84,6 +84,7 @@ exports.validateUser = (Model) =>
         return next(new AppError("Access Forbidden", 403));
       }
     }
+
     req.document = doc;
     next();
   });
@@ -93,3 +94,15 @@ exports.checkForCourse = catchAsync(async (req, res, next) => {
   if (!course) return next(new AppError("Course Not Found", 404));
   next();
 });
+
+exports.checkDocument = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.findById(req.params.id);
+
+    if (!doc) {
+      return next(new AppError("Document not found", 404));
+    }
+
+    req.document = doc;
+    next();
+  });

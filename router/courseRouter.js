@@ -7,47 +7,40 @@ const Course = require("../model/courseModel");
 
 const reviewRouter = require("../router/reviewRouter");
 const lectureRouter = require("../router/lectureRouter");
-const AppError = require("../util/appError");
+const questionRouter = require("../router/questionRouter");
 
 const router = express.Router();
 
 router.use("/:courseId/reviews", reviewRouter);
 router.use("/:id/lectures", lectureRouter);
 
+router.get("/", factoryController.getAll(Course));
+router.get("/:id", factoryController.getOne(Course));
+
+router.use(authController.protect);
+
 router.get(
   "/:courseId/checkout",
-  authController.protect,
   paymentController.checkingUserValidityForCheckout,
   paymentController.createCheckoutSession
 );
 
+router.use("/:id/questions", questionRouter);
+
 // router.get("/:courseId/payout", paymentController.handlePaymentToInstructor);
 
-router
-  .route("/")
-  .get(factoryController.getAll(Course))
-  .post(
-    authController.protect,
-    authController.restrictTo("instructor", "admin"),
-    courseController.addNewCourse,
-    factoryController.create(Course)
-  );
+router.use(authController.restrictTo("instructor", "admin"));
+
+router.post(
+  "/",
+  courseController.addNewCourse,
+  factoryController.create(Course),
+  factoryController.validateUser(Course)
+);
 
 router
   .route("/:id")
-  .get(factoryController.getOne(Course))
-  .delete(
-    authController.protect,
-    authController.restrictTo("instructor", "admin"),
-    factoryController.validateUser(Course),
-    factoryController.deleteOne(Course)
-  )
-  .patch(
-    authController.protect,
-    authController.restrictTo("instructor", "admin"),
-    factoryController.validateUser(Course),
-    courseController.updateCourse,
-    factoryController.updateOne(Course)
-  );
+  .delete(factoryController.deleteOne(Course))
+  .patch(courseController.updateCourse, factoryController.updateOne(Course));
 
 module.exports = router;
