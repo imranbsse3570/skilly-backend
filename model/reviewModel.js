@@ -55,7 +55,7 @@ reviewSchema.statics.calculateAverageRating = async function (courseId) {
     });
   } else {
     await Course.findByIdAndUpdate(courseId, {
-      rating: 0,
+      rating: 1,
       noOfReviews: 0,
     });
   }

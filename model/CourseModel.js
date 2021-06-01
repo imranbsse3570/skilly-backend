@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const Quiz = require("./quizModel");
+
 const courseSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -84,6 +86,9 @@ const courseSchema = new mongoose.Schema({
   slug: {
     type: String,
     unique: true,
+  },
+  quiz: {
+    type: Quiz,
   },
 });
 

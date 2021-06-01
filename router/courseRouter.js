@@ -8,6 +8,7 @@ const Course = require("../model/courseModel");
 const reviewRouter = require("../router/reviewRouter");
 const lectureRouter = require("../router/lectureRouter");
 const questionRouter = require("../router/questionRouter");
+const quizRouter = require("../router/quizRouter");
 
 const router = express.Router();
 
@@ -24,6 +25,8 @@ router.get(
   paymentController.checkingUserValidityForCheckout,
   paymentController.createCheckoutSession
 );
+
+router.use("/:id/quizs", quizRouter);
 
 router.use("/:id/questions", questionRouter);
 
