@@ -29,7 +29,7 @@ const quizSchema = new mongoose.Schema({
     ],
     validate: {
       validator: function () {
-        return this.questions.length >= 2;
+        return this.questions.length >= 40;
       },
       message: "There must be al least 40 questions",
     },

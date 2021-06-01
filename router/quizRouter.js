@@ -7,13 +7,19 @@ const Course = require("../model/courseModel");
 
 const router = express.Router({ mergeParams: true });
 
-router
-  .route("/startQuiz")
-  .get(
-    factoryController.checkDocument(Course),
-    quizController.checkForQuizStart,
-    quizController.quizQuestions
-  );
+router.get(
+  "/startQuiz",
+  factoryController.checkDocument(Course),
+  quizController.checkForQuizStart,
+  quizController.quizQuestions
+);
+
+router.post(
+  "/submitQuiz",
+  factoryController.checkDocument(Course),
+  quizController.checkForQuizStart,
+  quizController.submitQuestion
+);
 
 router.use(
   authController.restrictTo("instructor", "admin"),

@@ -73,5 +73,37 @@ exports.quizQuestions = (req, res, next) => {
 
   const questions = shuffle(course.quiz.questions);
 
-  console.log(questions);
+  const quiz = questions.splice(0, 25).map((question) => {
+    return {
+      question: question.question,
+      options: shuffle([...question.incorrectAnswers, question.correctAnswer]),
+    };
+  });
+
+  res.status(200).json({
+    status: "success",
+    results: quiz.length,
+    data: {
+      doc: quiz,
+    },
+  });
+};
+
+exports.submitQuestion = (req, res, next) => {
+  const course = req.document;
+
+  const user = req.user;
+
+  const answerSheet = course.quiz.questions.map((question) => {
+    return {
+      question: question.question,
+      answer: question.correctAnswer,
+    };
+  });
+
+  const score = 0;
+
+  const userAnswers = req.body.questions;
+
+  console.log(req.body);
 };
