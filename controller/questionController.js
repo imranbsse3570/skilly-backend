@@ -61,3 +61,8 @@ exports.deleteQuestion = catchAsync(async (req, res, next) => {
     status: "success",
   });
 });
+
+exports.settingParamsById = (req, res, next) => {
+  req.id = req.params.questionId;
+  next();
+};

@@ -95,6 +95,18 @@ exports.checkForCourse = catchAsync(async (req, res, next) => {
   next();
 });
 
+exports.checkDocumentById = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.findById(req.id);
+
+    if (!doc) {
+      return next(new AppError("Document not found", 404));
+    }
+
+    req.document = doc;
+    next();
+  });
+
 exports.checkDocument = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findById(req.params.id);

@@ -3,6 +3,8 @@ const express = require("express");
 const Question = require("../model/questionModel");
 const Course = require("../model/courseModel");
 
+const answerRouter = require("../router/answerRouter");
+
 const questionController = require("../controller/questionController");
 const factoryController = require("../controller/factoryController");
 
@@ -18,9 +20,21 @@ router
     factoryController.create(Question)
   );
 
+router.get(
+  "/:questionId",
+  questionController.settingsParams,
+  factoryController.getOne(Question)
+);
+
+router.use(
+  "/:questionId/answers",
+  questionController.settingParamsById,
+  factoryController.checkDocumentById(Question),
+  answerRouter
+);
+
 router
   .route("/:questionId")
-  .get(questionController.settingsParams, factoryController.getOne(Question))
   .patch(
     questionController.settingsParams,
     factoryController.checkDocument(Question),
