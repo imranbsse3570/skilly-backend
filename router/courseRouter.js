@@ -37,13 +37,19 @@ router.use(authController.restrictTo("instructor", "admin"));
 router.post(
   "/",
   courseController.addNewCourse,
-  factoryController.create(Course),
-  factoryController.validateUser(Course)
+  factoryController.create(Course)
 );
 
 router
   .route("/:id")
-  .delete(factoryController.deleteOne(Course))
-  .patch(courseController.updateCourse, factoryController.updateOne(Course));
+  .delete(
+    factoryController.validateUser(Course),
+    factoryController.deleteOne(Course)
+  )
+  .patch(
+    factoryController.validateUser(Course),
+    courseController.updateCourse,
+    factoryController.updateOne(Course)
+  );
 
 module.exports = router;

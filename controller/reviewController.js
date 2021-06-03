@@ -1,6 +1,4 @@
 const catchAsync = require("../util/catchAsync");
-const AppError = require("../util/appError");
-const Course = require("../model/courseModel");
 
 exports.updatingRequestBody = catchAsync(async (req, res, next) => {
   req.body.course = req.params.courseId;

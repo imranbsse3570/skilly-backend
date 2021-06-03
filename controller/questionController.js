@@ -2,6 +2,7 @@ const Answer = require("../model/answerModel");
 
 const AppError = require("../util/appError");
 const catchAsync = require("../util/catchAsync");
+const checkingForMatchingCourse = require("../util/findingCourseInUser");
 
 exports.settingsParams = (req, res, next) => {
   req.params.id = req.params.questionId;
@@ -9,7 +10,7 @@ exports.settingsParams = (req, res, next) => {
 };
 
 exports.checkUserValidity = catchAsync(async (req, res, next) => {
-  if (!req.user.courses.includes(req.params.id)) {
+  if (!checkingForMatchingCourse(req.user.courses, req.params.id)) {
     return next(new AppError("Restricted access to course", 403));
   }
 

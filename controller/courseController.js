@@ -21,6 +21,7 @@ exports.updateCourse = catchAsync(async (req, res, next) => {
   delete req.body.rating;
   delete req.body.totalDuration;
   delete req.body.category;
+  delete req.body.author;
 
   next();
 });

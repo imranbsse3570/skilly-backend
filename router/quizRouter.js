@@ -10,14 +10,14 @@ const router = express.Router({ mergeParams: true });
 router.get(
   "/startQuiz",
   factoryController.checkDocument(Course),
-  quizController.checkForQuizStart,
+  factoryController.checkingUserHavePurchasedCourse,
   quizController.quizQuestions
 );
 
 router.post(
   "/submitQuiz",
   factoryController.checkDocument(Course),
-  quizController.checkForQuizStart,
+  factoryController.checkingUserHavePurchasedCourse,
   quizController.submitQuestion
 );
 

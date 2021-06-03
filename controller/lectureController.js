@@ -4,6 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
 
+const checkingForMatchingCourse = require("../util/findingCourseInUser");
 const catchAsync = require("../util/catchAsync");
 const Lecture = require("../model/lectureModel");
 const Course = require("../model/courseModel");
@@ -170,7 +171,7 @@ exports.checkingAccessToLectures = (req, res, next) => {
 
   if (course.author.toString() !== user._id.toString()) {
     if (user.role !== "admin") {
-      if (!user.courses.includes(course._id)) {
+      if (!checkingForMatchingCourse(user.courses, course._id)) {
         return next(
           new AppError(
             "User is not allowed to access the course. Please purchase the course inorder to access this resource",

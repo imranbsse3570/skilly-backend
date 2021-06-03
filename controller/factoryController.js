@@ -1,6 +1,7 @@
 const catchAsync = require("../util/catchAsync");
 const AppError = require("../util/appError");
 const APIFeatures = require("../util/apiFeatures");
+const checkingForMatchingCourse = require("../util/findingCourseInUser");
 
 exports.create = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -31,9 +32,24 @@ exports.getAll = (Model) =>
     });
   });
 
+exports.getOneBySlug = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.findOne({ slug: req.params.slug });
+
+    if (!doc) {
+      return next(new AppError("doc not found", 404));
+    }
+
+    res.status(200).json({
+      status: "Success",
+      data: { doc },
+    });
+  });
+
 exports.getOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findById(req.params.id);
+
     if (!doc) {
       return next(new AppError("doc not found", 404));
     }
@@ -54,6 +70,25 @@ exports.deleteOne = (Model) =>
 
     res.status(204).json({
       status: "Success",
+    });
+  });
+
+exports.updateOneById = (Model) =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidatore: true,
+    });
+
+    if (!doc) {
+      return next(new AppError("Document not found", 404));
+    }
+
+    res.status(202).json({
+      status: "success",
+      data: {
+        doc,
+      },
     });
   });
 
@@ -118,3 +153,13 @@ exports.checkDocument = (Model) =>
     req.document = doc;
     next();
   });
+
+exports.checkingUserHavePurchasedCourse = (req, res, next) => {
+  const user = req.user;
+
+  if (!checkingForMatchingCourse(user.courses, req.params.id)) {
+    return next(new AppError("Please Purchase this course", 403));
+  }
+
+  next();
+};

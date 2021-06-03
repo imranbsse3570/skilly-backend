@@ -75,8 +75,23 @@ const userSchema = new mongoose.Schema({
   },
   courses: [
     {
-      type: mongoose.Schema.ObjectId,
-      ref: "Course",
+      courseId: {
+        type: mongoose.Schema.ObjectId,
+        ref: "Course",
+        unique: [true, "You have already purchased this course."],
+      },
+      score: {
+        type: Number,
+        default: 0,
+      },
+      watchedTime: {
+        type: String,
+        default: "00:00",
+      },
+      currentLecture: {
+        type: mongoose.Schema.ObjectId,
+        ref: "Lecture",
+      },
     },
   ],
 });

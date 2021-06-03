@@ -1,5 +1,6 @@
 const AppError = require("../util/appError");
 const catchAsync = require("../util/catchAsync");
+const checkingForMatchingCourse = require("../util/findingCourseInUser");
 
 exports.getQuizForInstructorOrAuthor = (req, res, next) => {
   const course = req.document;
@@ -54,16 +55,6 @@ exports.updateQuiz = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.checkForQuizStart = (req, res, next) => {
-  const user = req.user;
-
-  if (!user.courses.includes(req.params.id)) {
-    next(new AppError("Please Purchase this course", 403));
-  }
-
-  next();
-};
-
 function shuffle(array) {
   return array.sort(() => Math.random() - 0.5);
 }
@@ -89,21 +80,42 @@ exports.quizQuestions = (req, res, next) => {
   });
 };
 
-exports.submitQuestion = (req, res, next) => {
+exports.submitQuestion = catchAsync(async (req, res, next) => {
   const course = req.document;
+
+  if (req.body.questions < 25) {
+    next(new AppError("Please Attempt all questions", 401));
+  }
 
   const user = req.user;
 
-  const answerSheet = course.quiz.questions.map((question) => {
-    return {
-      question: question.question,
-      answer: question.correctAnswer,
-    };
+  const answerSheet = {};
+  course.quiz.questions.forEach((question) => {
+    answerSheet[`${question.question}`] = question.correctAnswer;
   });
 
-  const score = 0;
+  let score = 0;
 
-  const userAnswers = req.body.questions;
+  const userAnswers = req.body.questions.splice(0, 25);
 
-  console.log(req.body);
-};
+  userAnswers.forEach((question) => {
+    if (question.answer === answerSheet[question.question]) {
+      score++;
+    }
+  });
+
+  const courseStats = checkingForMatchingCourse(user.courses, course._id);
+  const courseIndex = user.courses.indexOf(courseStats);
+
+  courseStats.score = score;
+
+  user.courses[courseIndex] = courseStats;
+
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    status: "success",
+    message: `You got ${score}/25`,
+    result: `${score > 12 ? "Pass" : "Fail"}`,
+  });
+});
