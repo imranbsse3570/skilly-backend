@@ -3,6 +3,7 @@ const fs = require("fs");
 
 const path = require("path");
 const multer = require("multer");
+const { getVideoDurationInSeconds } = require("get-video-duration");
 
 const checkingForMatchingCourse = require("../util/findingCourseInUser");
 const catchAsync = require("../util/catchAsync");
@@ -90,8 +91,20 @@ exports.addNewLectures = catchAsync(async (req, res, next) => {
 
   req.body.source = req.file.filename;
 
-  const newLecture = await Lecture.create(req.body);
+  const duration = Math.floor(
+    await getVideoDurationInSeconds(path.resolve(req.file.path))
+  );
+
+  req.body.duration = duration;
+
   const course = req.document;
+
+  req.body.order = course.lectures.length + 1;
+
+  const newLecture = await Lecture.create(req.body);
+
+  course.totalDuration += duration;
+
   course.lectures = [...req.document.lectures, newLecture._id];
 
   await course.save({ validateBeforeSave: false });
@@ -252,6 +265,8 @@ exports.deleteLecture = async (req, res, next) => {
     return next(new AppError("Lecture not found ", 404));
   }
 
+  course.totalDuration -= lecture.duration;
+
   await deleteFile(`./uploads/lectures/${course._id}/${lecture.source}`);
 
   await course.save();
@@ -283,26 +298,67 @@ exports.checkingForTheLectureInCourse = (req, res, next) => {
 exports.updateLecture = catchAsync(async (req, res, next) => {
   const course = req.document;
 
+  const lecture = await Lecture.findById(req.params.lectureId);
+
+  if (!lecture) {
+    return next(new AppError("Lecture not found", 404));
+  }
+
   if (req.file) {
     await deleteFile(
       `./uploads/lectures/${course._id}/${req.lectureFound.source}`
     );
+
+    const duration = Math.floor(
+      await getVideoDurationInSeconds(path.resolve(req.file.path))
+    );
+
+    course.totalDuration -= lecture.duration;
+    course.totalDuration += duration;
+
+    await course.save();
+
+    req.body.duration = duration;
+
     req.body.source = req.file.filename;
   }
 
-  const lecture = await Lecture.findByIdAndUpdate(
-    req.params.lectureId,
-    req.body,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  await lecture.save();
 
   res.status(202).json({
     status: "success",
     data: {
       lecture,
     },
+  });
+});
+
+exports.markingVideoAsWatched = catchAsync(async (req, res, next) => {
+  const user = req.user;
+
+  const courseStats = checkingForMatchingCourse(user.courses, req.course._id);
+
+  if (!courseStats) {
+    return next(new AppError("Course not purchased", 403));
+  }
+
+  const lecture = req.course.lectures.filter(
+    (value) => value._id.toString() === req.params.lectureId.toString()
+  );
+
+  if (lecture.length === 0) {
+    return next(new AppError("Lecture Not Found", 404));
+  }
+
+  courseStats.watchedTime += lecture[0].duration;
+
+  const courseIndex = user.courses.indexOf(courseStats);
+
+  user.courses[courseIndex] = courseStats;
+
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    status: "success",
   });
 });

@@ -114,7 +114,7 @@ exports.validateUser = (Model) =>
     const doc = await Model.findById(req.params.id);
     if (!doc) return next(new AppError("Doc not Found", 404));
 
-    if (req.user._id.toString() !== doc.author.toString()) {
+    if (req.user._id.toString() !== doc.author._id.toString()) {
       if (req.user.role !== "admin") {
         return next(new AppError("Access Forbidden", 403));
       }

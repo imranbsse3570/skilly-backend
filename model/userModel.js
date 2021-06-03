@@ -85,8 +85,8 @@ const userSchema = new mongoose.Schema({
         default: 0,
       },
       watchedTime: {
-        type: String,
-        default: "00:00",
+        type: Number,
+        default: 0,
       },
       currentLecture: {
         type: mongoose.Schema.ObjectId,

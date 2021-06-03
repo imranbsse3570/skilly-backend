@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 const lectureSchema = new mongoose.Schema({
+  order: {
+    type: Number,
+  },
   title: {
     type: String,
     required: [true, "Lecture title is required"],
@@ -11,19 +14,6 @@ const lectureSchema = new mongoose.Schema({
   },
   duration: {
     type: Number,
-  },
-  watchedTime: {
-    type: Number,
-    validate: {
-      validator: function () {
-        return this.watchedTime <= this.duration;
-      },
-      message: "Watched Time must be less than or equal to duration of lecture",
-    },
-  },
-  watched: {
-    type: Boolean,
-    default: false,
   },
   caption: {
     type: String,
@@ -38,6 +28,8 @@ const lectureSchema = new mongoose.Schema({
     default: true,
   },
 });
+
+lectureSchema.index({ order: -1 });
 
 const Lecture = mongoose.model("Lecture", lectureSchema);
 

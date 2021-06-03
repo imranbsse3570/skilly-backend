@@ -7,7 +7,7 @@ const AppError = require("./appError");
 module.exports = async (pathOfFile) => {
   await fs.unlink(path.resolve(pathOfFile), (err) => {
     if (err) {
-      next(new AppError(err.message), 500);
+      throw new AppError(err.message, 500);
     }
   });
 };

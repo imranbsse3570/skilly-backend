@@ -30,6 +30,12 @@ router.use("/:id/quizs", quizRouter);
 
 router.use("/:id/questions", questionRouter);
 
+router.get(
+  "/:id/generateCertificate",
+  factoryController.checkDocument(Course),
+  courseController.generateCertificate
+);
+
 // router.get("/:courseId/payout", paymentController.handlePaymentToInstructor);
 
 router.use(authController.restrictTo("instructor", "admin"));

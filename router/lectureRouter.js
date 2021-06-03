@@ -37,4 +37,11 @@ router
     lectureController.deleteLecture
   );
 
+router.patch(
+  "/:lectureId/watched",
+  authController.protect,
+  lectureController.gettingCourseData,
+  lectureController.markingVideoAsWatched
+);
+
 module.exports = router;

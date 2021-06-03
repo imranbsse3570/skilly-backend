@@ -42,10 +42,9 @@ const questionSchema = new mongoose.Schema({
 });
 
 questionSchema.pre(/^find/, function (next) {
-  this.populate({ path: "user" });
-  //   .populate({
-  //   path: "replies",
-  // });
+  this.populate({ path: "user" }).populate({
+    path: "replies",
+  });
   next();
 });
 

@@ -62,17 +62,12 @@ const courseSchema = new mongoose.Schema({
   },
   totalDuration: {
     type: Number,
+    default: 0,
   },
   author: {
     type: mongoose.Schema.ObjectId,
     ref: "User",
   },
-  students: [
-    {
-      type: mongoose.Schema.ObjectId,
-      ref: "User",
-    },
-  ],
   lectures: [
     {
       type: mongoose.Schema.ObjectId,
@@ -92,8 +87,18 @@ const courseSchema = new mongoose.Schema({
   },
 });
 
+courseSchema.index({ price: -1 });
+courseSchema.index({ rating: 1 });
+courseSchema.index({ totalDuration: 1 });
+courseSchema.index(
+  { price: -1, rating: 1 },
+  {
+    unique: true,
+  }
+);
+
 courseSchema.pre(/^find/, function (next) {
-  this.populate("users").populate("category").populate("lectures");
+  this.populate("author").populate("category").populate("lectures");
   next();
 });
 
