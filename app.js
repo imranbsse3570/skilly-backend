@@ -7,11 +7,12 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const cors = require("cors");
 const compression = require("compression");
+const path = require("path");
 
-const courseRouter = require("./router/courseRouter");
-const userRouter = require("./router/userRouter");
-const categoryRouter = require("./router/categoryRouter");
-const globalErrorHandler = require("./controller/errorController");
+const courseRouter = require(path.resolve("router/courseRouter"));
+const userRouter = require(path.resolve("router/userRouter"));
+const categoryRouter = require(path.resolve("router/categoryRouter"));
+const globalErrorHandler = require(path.resolve("controller/errorController"));
 const filesRouter = require("./router/filesRouter");
 
 const codeController = require("./controller/codeExecuteController");
