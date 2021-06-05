@@ -6,6 +6,7 @@ const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
 const cors = require("cors");
+const compression = require("compression");
 
 const courseRouter = require("./router/courseRouter");
 const userRouter = require("./router/userRouter");
@@ -43,6 +44,8 @@ app.use(
     whitelist: ["duration", "price"],
   })
 );
+
+app.use(compression());
 
 app.use("/files", filesRouter);
 app.use("/api/v1/executeCode", codeController.executingCode);
