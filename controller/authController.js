@@ -72,7 +72,7 @@ const setCookiesAndResponse = (user, res, statusCode) => {
     ),
   };
 
-  if (process.env.NODE_ENV === "PRODUCTION") {
+  if (process.env.NODE_ENV === "production") {
     cookiesOption.secure = true;
   }
 
