@@ -9,12 +9,19 @@ const cors = require("cors");
 const compression = require("compression");
 const path = require("path");
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 console.log(`${__dirname}/router/courseRouter`, "testing");
 const courseRouter = require(`${__dirname}/router/courseRouter`);
+=======
+=======
+>>>>>>> parent of af07fb5 (testing)
+const courseRouter = require(path.resolve("router/courseRouter"));
+>>>>>>> parent of af07fb5 (testing)
 const userRouter = require(path.resolve("router/userRouter"));
 const categoryRouter = require(path.resolve("router/categoryRouter"));
 const globalErrorHandler = require(path.resolve("controller/errorController"));
-const filesRouter = require(path.resolve("router/filesRouter"));
+const filesRouter = require("./router/filesRouter");
 
 const codeController = require(path.resolve(
   "controller/codeExecuteController"
