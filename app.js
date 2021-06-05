@@ -47,6 +47,11 @@ app.use(
 
 app.use(compression());
 
+app.get("/", (req, res) => {
+  res.setHeader("Content-Type", "text/html");
+  res.status(200).end("<h1>Hello World</h1>");
+});
+
 app.use("/files", filesRouter);
 app.use("/api/v1/executeCode", codeController.executingCode);
 
