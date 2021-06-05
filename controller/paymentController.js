@@ -1,9 +1,12 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const path = require("path");
 
-const Course = require("../model/courseModel");
-const catchAsync = require("../util/catchAsync");
-const AppError = require("../util/appError");
-const checkingForMatchingCourse = require("../util/findingCourseInUser");
+const Course = require(path.resolve("model/courseModel"));
+const catchAsync = require(path.resolve("util/catchAsync"));
+const AppError = require(path.resolve("util/appError"));
+const checkingForMatchingCourse = require(path.resolve(
+  "util/findingCourseInUser"
+));
 
 exports.checkingUserValidityForCheckout = catchAsync(async (req, res, next) => {
   const user = req.user;

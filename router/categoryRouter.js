@@ -1,10 +1,13 @@
 const express = require("express");
+const path = require("path");
 
-const authController = require("../controller/authController");
-const factoryController = require("../controller/factoryController");
-const categorycontroller = require("../controller/categoryController");
+const authController = require(path.resolve("controller/authController"));
+const factoryController = require(path.resolve("controller/factoryController"));
+const categorycontroller = require(path.resolve(
+  "controller/categoryController"
+));
 
-const Category = require("../model/courseCategoryModel");
+const Category = require(path.resolve("model/courseCategoryModel"));
 
 const router = express.Router();
 

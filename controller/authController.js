@@ -4,12 +4,13 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const sharp = require("sharp");
+const path = require("path");
 
-const User = require("../model/userModel");
-const sendEmail = require("../util/sendEmail");
-const catchAsync = require("../util/catchAsync");
-const AppError = require("../util/appError");
-const deleteFile = require("../util/deleteFile");
+const User = require(path.resolve("model/userModel"));
+const sendEmail = require(path.resolve("util/sendEmail"));
+const catchAsync = require(path.resolve("util/catchAsync"));
+const AppError = require(path.resolve("util/appError"));
+const deleteFile = require(path.resolve("util/deleteFile"));
 
 // const storage = multer.diskStorage({
 //   destination: (req, file, cb) => {

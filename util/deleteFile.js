@@ -2,7 +2,7 @@ const fs = require("fs");
 
 const path = require("path");
 
-const AppError = require("./appError");
+const AppError = require(path.resolve("appError"));
 
 module.exports = async (pathOfFile) => {
   await fs.unlink(path.resolve(pathOfFile), (err) => {

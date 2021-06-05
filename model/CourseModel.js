@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const path = require("path");
 
-const Quiz = require("./quizModel");
+const Quiz = require(path.resolve("quizModel"));
 
 const courseSchema = new mongoose.Schema({
   title: {

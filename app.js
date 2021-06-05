@@ -9,17 +9,17 @@ const cors = require("cors");
 const compression = require("compression");
 const path = require("path");
 
-console.log(path.resolve("router/courseRouter"));
-
 const courseRouter = require(path.resolve("router/courseRouter"));
 const userRouter = require(path.resolve("router/userRouter"));
 const categoryRouter = require(path.resolve("router/categoryRouter"));
 const globalErrorHandler = require(path.resolve("controller/errorController"));
 const filesRouter = require(path.resolve("router/filesRouter"));
 
-const codeController = require("./controller/codeExecuteController");
+const codeController = require(path.resolve(
+  "controller/codeExecuteController"
+));
 
-const AppError = require("./util/appError");
+const AppError = require(path.resolve("util/appError"));
 
 const app = express();
 

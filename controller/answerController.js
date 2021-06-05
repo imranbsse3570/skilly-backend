@@ -1,6 +1,8 @@
-const Answer = require("../model/answerModel");
-const AppError = require("../util/appError");
-const catchAsync = require("../util/catchAsync");
+const path = require("path");
+
+const Answer = require(path.resolve("model/answerModel"));
+const AppError = require(path.resolve("util/appError"));
+const catchAsync = require(path.resolve("util/catchAsync"));
 
 exports.saveUserId = (req, res, next) => {
   req.body.user = req.user._id;

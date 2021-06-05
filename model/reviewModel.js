@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const path = require("path");
 
-const Course = require("./courseModel");
+const Course = require(path.resolve("courseModel"));
 
 const reviewSchema = new mongoose.Schema({
   author: {

@@ -1,7 +1,9 @@
-const User = require("../model/userModel");
-const APIFeatures = require("../util/apiFeatures");
-const catchAsync = require("../util/catchAsync");
-const AppError = require("../util/appError");
+const path = require("path");
+
+const User = require(path.resolve("model/userModel"));
+const APIFeatures = require(path.resolve("util/apiFeatures"));
+const catchAsync = require(path.resolve("util/catchAsync"));
+const AppError = require(path.resolve("util/appError"));
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const features = new APIFeatures(User.find(), req.query)

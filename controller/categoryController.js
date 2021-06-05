@@ -1,7 +1,9 @@
-const catchAsync = require("../util/catchAsync");
-const Category = require("../model/courseCategoryModel");
-const generateUniqueSlug = require("../util/generateUniqueSlug");
-const AppError = require("../util/appError");
+const path = require("path");
+
+const catchAsync = require(path.resolve("util/catchAsync"));
+const Category = require(path.resolve("model/courseCategoryModel"));
+const generateUniqueSlug = require(path.resolve("util/generateUniqueSlug"));
+const AppError = require(path.resolve("util/appError"));
 
 exports.createSlug = catchAsync(async (req, res, next) => {
   const { title } = req.body;

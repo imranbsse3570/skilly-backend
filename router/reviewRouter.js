@@ -1,9 +1,11 @@
 const express = require("express");
-const reviewController = require("../controller/reviewController");
-const authController = require("../controller/authController");
-const factoryController = require("../controller/factoryController");
+const path = require("path");
 
-const Review = require("../model/reviewModel");
+const reviewController = require(path.resolve("controller/reviewController"));
+const authController = require(path.resolve("controller/authController"));
+const factoryController = require(path.resolve("controller/factoryController"));
+
+const Review = require(path.resolve("model/reviewModel"));
 
 const router = express.Router({ mergeParams: true });
 

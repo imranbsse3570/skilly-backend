@@ -1,6 +1,10 @@
-const AppError = require("../util/appError");
-const catchAsync = require("../util/catchAsync");
-const checkingForMatchingCourse = require("../util/findingCourseInUser");
+const path = require("path");
+
+const AppError = require(path.resolve("util/appError"));
+const catchAsync = require(path.resolve("util/catchAsync"));
+const checkingForMatchingCourse = require(path.resolve(
+  "util/findingCourseInUser"
+));
 
 exports.getQuizForInstructorOrAuthor = (req, res, next) => {
   const course = req.document;
