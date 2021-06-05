@@ -1,11 +1,7 @@
-const path = require("path");
-
-const catchAsync = require(path.resolve("util/catchAsync"));
-const AppError = require(path.resolve("util/appError"));
-const APIFeatures = require(path.resolve("util/apiFeatures"));
-const checkingForMatchingCourse = require(path.resolve(
-  "util/findingCourseInUser"
-));
+const catchAsync = require("./../util/catchAsync");
+const AppError = require("./../util/appError");
+const APIFeatures = require("./../util/apiFeatures");
+const checkingForMatchingCourse = require("./../util/findingCourseInUser");
 
 exports.create = (Model) =>
   catchAsync(async (req, res, next) => {

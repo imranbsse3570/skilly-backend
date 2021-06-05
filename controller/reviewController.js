@@ -1,6 +1,4 @@
-const path = require("path");
-
-const catchAsync = require(path.resolve("util/catchAsync"));
+const catchAsync = require("./../util/catchAsync");
 
 exports.updatingRequestBody = catchAsync(async (req, res, next) => {
   req.body.course = req.params.courseId;

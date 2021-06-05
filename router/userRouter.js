@@ -1,8 +1,8 @@
 const express = require("express");
 const path = require("path");
 
-const userController = require(path.resolve("controller/userController"));
-const authController = require(path.resolve("controller/authController"));
+const userController = require("./../controller/userController");
+const authController = require("./../controller/authController");
 
 const router = express.Router();
 

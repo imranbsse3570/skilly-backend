@@ -5,14 +5,12 @@ const path = require("path");
 const multer = require("multer");
 const { getVideoDurationInSeconds } = require("get-video-duration");
 
-const checkingForMatchingCourse = require(path.resolve(
-  "util/findingCourseInUser"
-));
-const catchAsync = require(path.resolve("util/catchAsync"));
-const Lecture = require(path.resolve("model/lectureModel"));
-const Course = require(path.resolve("model/courseModel"));
-const AppError = require(path.resolve("util/appError"));
-const deleteFile = require(path.resolve("util/deleteFile"));
+const checkingForMatchingCourse = require("./../util/findingCourseInUser");
+const catchAsync = require("./../util/catchAsync");
+const Lecture = require("./../model/lectureModel");
+const Course = require("./../model/courseModel");
+const AppError = require("./../util/appError");
+const deleteFile = require("./../util/deleteFile");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

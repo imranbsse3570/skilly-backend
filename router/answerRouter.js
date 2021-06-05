@@ -1,13 +1,8 @@
 const express = require("express");
-const path = require("path");
 
-const { settingsParams } = require(path.resolve(
-  "controller/questionController"
-));
-const factoryController = require(path.resolve("controller/factoryController"));
-const Answer = require(path.resolve("model/answerModel"));
-const Question = require(path.resolve("model/questionModel"));
-const answerController = require(path.resolve("controller/answerController"));
+const factoryController = require("./../controller/factoryController");
+const Answer = require("./../model/answerModel");
+const answerController = require("./../controller/answerController");
 
 const router = express.Router({ mergeParams: true });
 

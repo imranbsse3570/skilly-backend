@@ -1,8 +1,8 @@
 const path = require("path");
 const sharp = require("sharp");
 
-const catchAsync = require(path.resolve("util/catchAsync"));
-const AppError = require(path.resolve("util/appError"));
+const catchAsync = require("./../util/catchAsync");
+const AppError = require("./../util/appError");
 
 exports.resizeImages = catchAsync(async (req, res, next) => {
   const { imageType, imageName } = req.params;

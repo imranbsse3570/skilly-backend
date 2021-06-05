@@ -1,8 +1,6 @@
-const path = require("path");
-
-const AppError = require(path.resolve("util/appError"));
-const catchAsync = require(path.resolve("util/catchAsync"));
-const executeCode = require(path.resolve("util/executeCode"));
+const AppError = require("./../util/appError");
+const catchAsync = require("./../util/catchAsync");
+const executeCode = require("./../util/executeCode");
 
 exports.executingCode = catchAsync(async (req, res, next) => {
   const { language, script } = req.body;

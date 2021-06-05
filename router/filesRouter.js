@@ -1,9 +1,8 @@
 const express = require("express");
-const path = require("path");
 
-const lectureController = require(path.resolve("controller/lectureController"));
-const authController = require(path.resolve("controller/authController"));
-const mediaController = require(path.resolve("controller/mediaController"));
+const lectureController = require("./../controller/lectureController");
+const authController = require("./../controller/authController");
+const mediaController = require("./../controller/mediaController");
 
 const router = express.Router();
 

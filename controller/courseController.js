@@ -1,13 +1,11 @@
 const path = require("path");
 
-const catchAsync = require(path.resolve("util/catchAsync"));
-const Course = require(path.resolve("model/courseModel"));
-const generateSlug = require(path.resolve("util/generateUniqueSlug"));
-const checkingForMatchingCourse = require(path.resolve(
-  "util/findingCourseInUser"
-));
-const AppError = require(path.resolve("util/appError"));
-const generatePdf = require(path.resolve("util/generatePdf"));
+const catchAsync = require("./../util/catchAsync");
+const Course = require("./../model/courseModel");
+const generateSlug = require("./../util/generateUniqueSlug");
+const checkingForMatchingCourse = require("./../util/findingCourseInUser");
+const AppError = require("./../util/appError");
+const generatePdf = require("./../util/generatePdf");
 
 exports.addNewCourse = catchAsync(async (req, res, next) => {
   const { title } = req.body;

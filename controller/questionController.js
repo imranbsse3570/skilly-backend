@@ -1,12 +1,8 @@
-const path = require("path");
+const Answer = require("./../model/answerModel");
 
-const Answer = require(path.resolve("model/answerModel"));
-
-const AppError = require(path.resolve("util/appError"));
-const catchAsync = require(path.resolve("util/catchAsync"));
-const checkingForMatchingCourse = require(path.resolve(
-  "util/findingCourseInUser"
-));
+const AppError = require("./../util/appError");
+const catchAsync = require("./../util/catchAsync");
+const checkingForMatchingCourse = require("./../util/findingCourseInUser");
 
 exports.settingsParams = (req, res, next) => {
   req.params.id = req.params.questionId;
