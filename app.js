@@ -9,7 +9,8 @@ const cors = require("cors");
 const compression = require("compression");
 const path = require("path");
 
-const courseRouter = require(path.resolve("router/courseRouter"));
+console.log(`${__dirname}/router/courseRouter`);
+const courseRouter = require(`${__dirname}/router/courseRouter`);
 const userRouter = require(path.resolve("router/userRouter"));
 const categoryRouter = require(path.resolve("router/categoryRouter"));
 const globalErrorHandler = require(path.resolve("controller/errorController"));
