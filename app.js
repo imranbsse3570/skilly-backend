@@ -1,7 +1,5 @@
 const express = require("express");
-if (process.env.NODE_ENV === "DEVELOPMENT") {
-  const morgan = require("morgan");
-}
+
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
@@ -27,6 +25,7 @@ app.use(helmet());
 app.use(cors());
 
 if (process.env.NODE_ENV === "DEVELOPMENT") {
+  const morgan = require("morgan");
   app.use(morgan("dev"));
 }
 
