@@ -1,7 +1,7 @@
 const path = require("path");
 
 const catchAsync = require("./../util/catchAsync");
-const Course = require("./../model/courseModel");
+const Course = require("../model/courseModel");
 const generateSlug = require("./../util/generateUniqueSlug");
 const checkingForMatchingCourse = require("./../util/findingCourseInUser");
 const AppError = require("./../util/appError");
