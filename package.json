@@ -33,8 +33,8 @@
     "morgan": "^1.10.0"
   },
   "scripts": {
-    "start": "node server.js",
-    "start:dev": "SET NODE_ENV=DEVELOPMENT&&nodemon server.js",
-    "start:prod": "SET NODE_ENV=production&&nodemon server.js"
+    "start": "node index.js",
+    "start:dev": "SET NODE_ENV=DEVELOPMENT&&nodemon index.js",
+    "start:prod": "SET NODE_ENV=production&&nodemon index.js"
   }
 }
