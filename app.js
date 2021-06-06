@@ -1,5 +1,7 @@
 const express = require("express");
-const morgan = require("morgan");
+if (process.env.NODE_ENV === "DEVELOPMENT") {
+  const morgan = require("morgan");
+}
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
@@ -24,7 +26,10 @@ app.use(helmet());
 
 app.use(cors());
 
-if (process.env.NODE_ENV === "DEVELOPMENT") app.use(morgan("dev"));
+if (process.env.NODE_ENV === "DEVELOPMENT") {
+  app.use(morgan("dev"));
+}
+
 const limiter = rateLimit({
   max: 500,
   windowMs: 60 * 60 * 1000,
@@ -45,11 +50,6 @@ app.use(
 );
 
 app.use(compression());
-
-app.get("/", (req, res) => {
-  res.setHeader("Content-Type", "text/html");
-  res.status(200).end("<h1>Hello World</h1>");
-});
 
 app.use("/files", filesRouter);
 app.use("/api/v1/executeCode", codeController.executingCode);

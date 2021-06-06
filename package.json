@@ -29,12 +29,14 @@
     "slugify": "^1.5.3",
     "stripe": "^8.149.0",
     "validator": "^13.6.0",
-    "xss-clean": "^0.1.1",
-    "morgan": "^1.10.0"
+    "xss-clean": "^0.1.1"
   },
   "scripts": {
     "start": "node server.js",
     "start:dev": "SET NODE_ENV=DEVELOPMENT&&nodemon index.js",
     "start:prod": "SET NODE_ENV=production&&nodemon index.js"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0"
   }
 }
