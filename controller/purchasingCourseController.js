@@ -14,8 +14,6 @@ exports.addCourseInUserPurchaseList = catchAsync(async (req, res, next) => {
   );
 
   if (event.type === "checkout.session.completed") {
-    console.log(event.data.object);
-
     const { client_reference_id, customer_email } = event.data.object;
 
     const user = await User.findOne({ email: customer_email });

@@ -81,7 +81,11 @@ const setCookiesAndResponse = (user, res, statusCode) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const { name, email, password, confirmPassword } = req.body;
+  const { name, email, password, confirmPassword, role } = req.body;
+
+  if (role === "admin") {
+    return next(new AppError("You cannot login as admin", 403));
+  }
 
   // creating new user
   const newUser = await User.create({
@@ -89,6 +93,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     email,
     password,
     confirmPassword,
+    role,
   });
 
   // checking if user is created
