@@ -4,7 +4,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 exports.addCourseInUserPurchaseList = catchAsync(async (req, res, next) => {
   const signature = req.headers["stripe-signature"];
 
-  const event = stripe.webhooks.constructEvents(
+  const event = stripe.webhooks.constructEvent(
     req.body,
     signature,
     process.env.STRIPE_WEBHOOK_SECRET
