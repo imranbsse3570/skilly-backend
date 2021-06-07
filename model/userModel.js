@@ -19,6 +19,7 @@ const purchaseSchema = new mongoose.Schema({
   courseId: {
     type: mongoose.Schema.ObjectId,
     ref: "Course",
+    unique: [true, "You have already purchased this course"],
   },
 });
 
