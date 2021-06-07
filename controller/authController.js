@@ -4,24 +4,12 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const sharp = require("sharp");
-const path = require("path");
 
 const User = require("./../model/userModel");
 const sendEmail = require("./../util/sendEmail");
 const catchAsync = require("./../util/catchAsync");
 const AppError = require("./../util/appError");
 const deleteFile = require("./../util/deleteFile");
-
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "uploads/users");
-//   },
-//   filename: (req, file, cb) => {
-//     const user = req.user;
-//     const ext = file.mimetype.split("/")[1];
-//     cb(null, `user-${user._id.toString()}-${Date.now()}.${ext}`);
-//   },
-// });
 
 const storage = multer.memoryStorage();
 
@@ -95,17 +83,13 @@ const setCookiesAndResponse = (user, res, statusCode) => {
 exports.signup = catchAsync(async (req, res, next) => {
   const { name, email, password, confirmPassword } = req.body;
 
-  try {
-    // creating new user
-    const newUser = await User.create({
-      name,
-      email,
-      password,
-      confirmPassword,
-    });
-  } catch (err) {
-    console.log(err);
-  }
+  // creating new user
+  const newUser = await User.create({
+    name,
+    email,
+    password,
+    confirmPassword,
+  });
 
   // checking if user is created
   if (!newUser) {

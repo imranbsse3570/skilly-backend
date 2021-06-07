@@ -3,6 +3,25 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const validator = require("validator");
 
+const purchaseSchema = new mongoose.Schema({
+  score: {
+    type: Number,
+    default: 0,
+  },
+  watchedTime: {
+    type: Number,
+    default: 0,
+  },
+  currentLecture: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Lecture",
+  },
+  courseId: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Course",
+  },
+});
+
 const userSchema = new mongoose.Schema({
   photo: {
     type: String,
@@ -73,27 +92,7 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  courses: [
-    {
-      courseId: {
-        type: mongoose.Schema.ObjectId,
-        ref: "Course",
-        unique: [true, "You have already purchased this course."],
-      },
-      score: {
-        type: Number,
-        default: 0,
-      },
-      watchedTime: {
-        type: Number,
-        default: 0,
-      },
-      currentLecture: {
-        type: mongoose.Schema.ObjectId,
-        ref: "Lecture",
-      },
-    },
-  ],
+  courses: [purchaseSchema],
 });
 
 userSchema.pre("save", async function (next) {
