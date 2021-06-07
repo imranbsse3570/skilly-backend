@@ -19,7 +19,7 @@ exports.addCourseInUserPurchaseList = catchAsync(async (req, res, next) => {
     const { client_reference_id, customer_email } = event.data.object;
 
     const user = await User.findOne({ email: customer_email });
-    const course = await Course.findById(client_reference_id.courseId);
+    const course = await Course.findById(courseId);
 
     user.courses = [...user.courses, { courseId: course._id }];
 
