@@ -95,13 +95,17 @@ const setCookiesAndResponse = (user, res, statusCode) => {
 exports.signup = catchAsync(async (req, res, next) => {
   const { name, email, password, confirmPassword } = req.body;
 
-  // creating new user
-  const newUser = await User.create({
-    name,
-    email,
-    password,
-    confirmPassword,
-  });
+  try {
+    // creating new user
+    const newUser = await User.create({
+      name,
+      email,
+      password,
+      confirmPassword,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 
   // checking if user is created
   if (!newUser) {
