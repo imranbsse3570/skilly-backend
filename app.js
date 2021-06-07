@@ -1,5 +1,5 @@
 const express = require("express");
-
+const cookieParser = require("cookie-parser");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
@@ -24,6 +24,8 @@ const app = express();
 app.use(helmet());
 
 app.use(cors());
+
+app.use(cookieParser());
 
 if (process.env.NODE_ENV === "DEVELOPMENT") {
   const morgan = require("morgan");
