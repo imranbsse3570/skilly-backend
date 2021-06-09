@@ -1,5 +1,8 @@
 const crypto = require("crypto");
+const fs = require("fs");
 
+const path = require("path");
+const handlebars = require("handlebars");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
@@ -10,6 +13,9 @@ const sendEmail = require("./../util/sendEmail");
 const catchAsync = require("./../util/catchAsync");
 const AppError = require("./../util/appError");
 const deleteFile = require("./../util/deleteFile");
+
+const htmlFile = fs.readFileSync("resources/action.html", "utf-8");
+const template = handlebars.compile(htmlFile);
 
 const storage = multer.memoryStorage();
 
@@ -106,27 +112,18 @@ exports.signup = catchAsync(async (req, res, next) => {
 
   await newUser.save({ validateBeforeSave: false });
 
-  // sending verification mail to client
-  sendEmail(
-    [newUser.email],
-    "Verify Account",
-    "Verify your Account",
-    `<!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Verify Account</title>
-        </head>
-        <body>
-            <p>Please click on the link to verify your account on skilly.com</p>
-            <a href="${req.protocol}://${req.get(
+  const html = template({
+    url: `${req.protocol}://${req.get(
       "host"
-    )}/api/v1/users/verifyUser/${verificationToken}">Click Here</a>
-        </body>
-        </html>`
-  );
+    )}/api/v1/users/verifyUser/${verificationToken}`,
+    topMessage: "Please confirm your email address by clicking the link below.",
+    bottomMessage:
+      "We may need to send you critical information about our service and it is important that we have an accurate email address.",
+    buttonText: "Confirm email address",
+  });
+
+  // sending verification mail to client
+  sendEmail([newUser.email], "Verify Account", html, html);
 
   setCookiesAndResponse(newUser, res, 201);
 });
@@ -192,27 +189,17 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
 
-  sendEmail(
-    [user.email],
-    "Reset Password Link Expires in 60 minutes",
-    undefined,
-    `<!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Reset Password</title>
-        </head>
-        <body>
-            <p>Please click on the link to reset password of your account on skilly.com</p>
-            <small>Note: Link expires in 60 minutes</small>
-            <a href="${req.protocol}://${req.get(
+  const html = template({
+    url: `${req.protocol}://${req.get(
       "host"
-    )}/api/v1/users/resetPassword/${resetToken}">Click Here</a>
-        </body>
-        </html>`
-  );
+    )}/api/v1/users/resetPassword/${resetToken}`,
+    buttonText: "Reset Password",
+    topMessage: "Please reset your password by clicking the link below.",
+    bottomMessage:
+      "Note: This link will expires in 60 minutes. After 60 minutes this link will no longer be working.",
+  });
+
+  sendEmail([user.email], "Reset Password Link Expires in 60 minutes", html);
 
   res.status(200).json({
     status: "success",
@@ -358,28 +345,17 @@ exports.updateMyEmail = catchAsync(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
 
-  sendEmail(
-    [user.email],
-    "Verify Account",
-    "Verify your Account",
-    `<!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Verify Account</title>
-        </head>
-        <body>
-            <p>Please click on the link to verify your eamil ${
-              user.email
-            } on skilly.com</p>
-            <a href="${req.protocol}://${req.get(
+  const html = template({
+    url: `${req.protocol}://${req.get(
       "host"
-    )}/api/v1/users/verifyUser/${verificationToken}">Click Here</a>
-        </body>
-        </html>`
-  );
+    )}/api/v1/users/verifyUser/${verificationToken}`,
+    topMessage: "Please confirm your email address by clicking the link below.",
+    bottomMessage:
+      "We may need to send you critical information about our service and it is important that we have an accurate email address.",
+    buttonText: "Confirm email address",
+  });
+
+  sendEmail([user.email], "Verify Account", html);
 
   res.status(202).json({
     status: "success",

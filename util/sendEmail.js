@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const mg = require("nodemailer-mailgun-transport");
 
-const sendEmail = async (emails, subject, text, html) => {
+const sendEmail = async (emails, subject, html) => {
   try {
     let transporter;
 
@@ -29,7 +29,6 @@ const sendEmail = async (emails, subject, text, html) => {
       from: `${process.env.EMAIL_SENDER_NAME} <${process.env.EMAIL_OF_SENDER}>`, // sender address
       to: emails.join(","), // list of receivers
       subject, // Subject line
-      text, // plain text body
       html, // html body
     };
 

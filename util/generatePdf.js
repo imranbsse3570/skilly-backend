@@ -5,7 +5,9 @@ const handlebars = require("handlebars");
 const path = require("path");
 
 module.exports = async (pathOfTemplate, templateData) => {
-  const htmlFile = fs.readFileSync(path.resolve(pathOfTemplate), "utf-8");
+  const htmlFile = await fs.promises.readFile(path.resolve(pathOfTemplate), {
+    encoding: "utf-8",
+  });
 
   const template = handlebars.compile(htmlFile);
 
