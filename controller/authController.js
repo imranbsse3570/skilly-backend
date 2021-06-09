@@ -1,7 +1,6 @@
 const crypto = require("crypto");
 const fs = require("fs");
 
-const path = require("path");
 const handlebars = require("handlebars");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
