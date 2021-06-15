@@ -1,19 +1,18 @@
 const nodemailer = require("nodemailer");
-const mg = require("nodemailer-mailgun-transport");
 
 const sendEmail = async (emails, subject, html) => {
   try {
     let transporter;
 
     if (process.env.NODE_ENV === "production") {
-      const auth = {
+      transporter = nodemailer.createTransport({
+        host: process.env.PRODUCTION_EMAIL_HOST,
+        port: process.env.PRODUCTION_EMAIL_PORT,
         auth: {
-          api_key: process.env.PRODUCTION_EMAIL_API_KEY,
-          domain: process.env.PRODUCTION_EMAIL_DOMAIN,
+          user: process.env.PRODUCTION_EMAIL_USERNAME,
+          pass: process.env.PRODUCTION_EMAIL_PASSWORD,
         },
-      };
-
-      transporter = nodemailer.createTransport(mg(auth));
+      });
     } else {
       transporter = nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
