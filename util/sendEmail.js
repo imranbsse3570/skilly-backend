@@ -5,12 +5,19 @@ const sendEmail = async (emails, subject, html) => {
     let transporter;
 
     if (process.env.NODE_ENV === "production") {
+      // transporter = nodemailer.createTransport({
+      //   host: process.env.PRODUCTION_EMAIL_HOST,
+      //   port: process.env.PRODUCTION_EMAIL_PORT,
+      //   auth: {
+      //     user: process.env.PRODUCTION_EMAIL_USERNAME,
+      //     pass: process.env.PRODUCTION_EMAIL_PASSWORD,
+      //   },
+      // });
       transporter = nodemailer.createTransport({
-        host: process.env.PRODUCTION_EMAIL_HOST,
-        port: process.env.PRODUCTION_EMAIL_PORT,
+        service: "gmail",
         auth: {
-          user: process.env.PRODUCTION_EMAIL_USERNAME,
-          pass: process.env.PRODUCTION_EMAIL_PASSWORD,
+          user: process.env.PRODUCTION_GMAIL,
+          pass: process.env.PRODUCTION_GMAIL_PASSWORD,
         },
       });
     } else {
