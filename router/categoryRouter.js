@@ -10,6 +10,8 @@ const router = express.Router();
 
 router.get("/", factoryController.getAll(Category));
 
+router.get("/:slug", factoryController.getOneBySlug(Category));
+
 router.get("/:id", factoryController.getOne(Category));
 
 router.use(authController.protect);
