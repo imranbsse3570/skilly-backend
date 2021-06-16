@@ -15,6 +15,17 @@ const courseCategorySchema = new mongoose.Schema({
   },
 });
 
+courseCategorySchema.virtual("courses", {
+  ref: "Course",
+  localField: "_id",
+  foreignField: "category",
+});
+
+courseCategorySchema.pre(/^find/, function (next) {
+  this.populate("courses");
+  next();
+});
+
 const Category = mongoose.model("Category", courseCategorySchema);
 
 module.exports = Category;
