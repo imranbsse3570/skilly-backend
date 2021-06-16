@@ -41,6 +41,7 @@ exports.addNewCourse = catchAsync(async (req, res, next) => {
   const { title } = req.body;
   const courses = await Course.find({ title });
   req.body.slug = generateSlug(courses, title);
+  console.log("completed at this point");
   req.body.author = req.user._id;
   next();
 });
