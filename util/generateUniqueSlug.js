@@ -3,7 +3,7 @@ const slugify = require("slugify");
 module.exports = (resource, title) => {
   const slug = slugify(title, {
     lower: true,
-    replacement: "_",
+    replacement: "-",
   });
 
   if (resource.length > 0) {
