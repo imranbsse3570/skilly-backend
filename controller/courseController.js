@@ -32,16 +32,15 @@ exports.reFormatPicture = catchAsync(async (req, res, next) => {
     await sharp(req.file.buffer)
       .png()
       .toFile(`uploads/lectureCoverImages/${req.body.previewImage}`);
+    console.log("done at this point");
   }
   next();
 });
 
 exports.addNewCourse = catchAsync(async (req, res, next) => {
-  console.log(req.body);
   const { title } = req.body;
   const courses = await Course.find({ title });
   req.body.slug = generateSlug(courses, title);
-  console.log("completed at this point");
   req.body.author = req.user._id;
   next();
 });
