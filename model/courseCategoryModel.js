@@ -9,6 +9,10 @@ const courseCategorySchema = new mongoose.Schema({
     type: String,
     unique: [true, "Slug must be unique"],
   },
+  previewImage: {
+    type: String,
+    default: "default.jpg",
+  },
 });
 
 const Category = mongoose.model("Category", courseCategorySchema);

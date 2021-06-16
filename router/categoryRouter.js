@@ -2,7 +2,7 @@ const express = require("express");
 
 const authController = require("./../controller/authController");
 const factoryController = require("./../controller/factoryController");
-const categorycontroller = require("./../controller/categoryController");
+const categoryController = require("./../controller/categoryController");
 
 const Category = require("./../model/courseCategoryModel");
 
@@ -15,7 +15,9 @@ router
   .get(factoryController.getAll(Category))
   .post(
     authController.restrictTo("admin", "instructor"),
-    categorycontroller.createSlug,
+    categoryController.uploadCategoryPreviewImage.single("previewImage"),
+    categoryController.createSlug,
+    categoryController.reFormatPicture,
     factoryController.create(Category)
   );
 
@@ -24,7 +26,9 @@ router
   .get(factoryController.getOne(Category))
   .patch(
     authController.restrictTo("admin"),
-    categorycontroller.createSlug,
+    categoryController.uploadCategoryPreviewImage.single("previewImage"),
+    categoryController.createSlug,
+    categoryController.reFormatPicture,
     factoryController.updateOneById(Category)
   )
   .delete(

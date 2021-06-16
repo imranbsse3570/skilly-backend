@@ -87,7 +87,7 @@ const courseSchema = new mongoose.Schema({
   },
   previewImage: {
     type: String,
-    default: "default.jpeg",
+    default: "default.jpg",
   },
 });
 

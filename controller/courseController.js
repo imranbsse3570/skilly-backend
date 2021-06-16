@@ -33,7 +33,6 @@ exports.reFormatPicture = catchAsync(async (req, res, next) => {
       .png()
       .toFile(`uploads/lectureCoverImages/${req.body.previewImage}`);
   }
-  console.log(req.body);
   next();
 });
 
