@@ -1,5 +1,6 @@
 const path = require("path");
 const multer = require("multer");
+const sharp = require("sharp");
 
 const catchAsync = require("./../util/catchAsync");
 const Course = require("../model/courseModel");
