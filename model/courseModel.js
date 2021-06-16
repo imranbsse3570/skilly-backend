@@ -85,6 +85,10 @@ const courseSchema = new mongoose.Schema({
   quiz: {
     type: Quiz,
   },
+  previewImage: {
+    type: String,
+    default: "default.jpeg",
+  },
 });
 
 courseSchema.index({ price: -1 });

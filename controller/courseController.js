@@ -1,4 +1,5 @@
 const path = require("path");
+const multer = require("multer");
 
 const catchAsync = require("./../util/catchAsync");
 const Course = require("../model/courseModel");
@@ -6,6 +7,33 @@ const generateSlug = require("./../util/generateUniqueSlug");
 const checkingForMatchingCourse = require("./../util/findingCourseInUser");
 const AppError = require("./../util/appError");
 const generatePdf = require("./../util/generatePdf");
+
+const storage = multer.memoryStorage();
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new AppError("File type not supported please upload an image", 400));
+  }
+};
+
+exports.uploadCoursePreviewImage = multer({
+  storage,
+  fileFilter,
+});
+
+exports.reFormatPicture = catchAsync(async (req, res, next) => {
+  if (req.file) {
+    req.body.previewImage = `lecture-preview-${
+      req.body.slug
+    }-${Date.now()}.png`;
+    await sharp(req.file.buffer)
+      .png()
+      .toFile(`uploads/lectureCoverImages/${req.body.previewImage}`);
+  }
+  next();
+});
 
 exports.addNewCourse = catchAsync(async (req, res, next) => {
   const { title } = req.body;
@@ -20,6 +48,8 @@ exports.updateCourse = catchAsync(async (req, res, next) => {
     const { title } = req.body;
     const courses = await Course.find({ title });
     req.body.slug = generateSlug(courses, title);
+  } else {
+    req.body.slug = req.document.slug;
   }
 
   delete req.body.noOfReviews;

@@ -44,6 +44,8 @@ router.use(authController.restrictTo("instructor", "admin"));
 router.post(
   "/",
   courseController.addNewCourse,
+  courseController.uploadCoursePreviewImage.single("previewImage"),
+  courseController.reFormatPicture,
   factoryController.create(Course)
 );
 
@@ -56,6 +58,8 @@ router
   .patch(
     factoryController.validateUser(Course),
     courseController.updateCourse,
+    courseController.uploadCoursePreviewImage.single("previewImage"),
+    courseController.reFormatPicture,
     factoryController.updateOne(Course)
   );
 
