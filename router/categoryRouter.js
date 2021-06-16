@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get("/", factoryController.getAll(Category));
 
-router.get("/:slug", factoryController.getOneBySlug(Category));
+router.get("/get/:slug", factoryController.getOneBySlug(Category));
 
 router.get("/:id", factoryController.getOne(Category));
 
