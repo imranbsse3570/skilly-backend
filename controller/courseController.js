@@ -36,8 +36,8 @@ exports.reFormatPicture = catchAsync(async (req, res, next) => {
 });
 
 exports.addNewCourse = catchAsync(async (req, res, next) => {
+  console.log(req.body);
   const { title } = req.body;
-  console.log(title);
   const courses = await Course.find({ title });
   req.body.slug = generateSlug(courses, title);
   req.body.author = req.user._id;
