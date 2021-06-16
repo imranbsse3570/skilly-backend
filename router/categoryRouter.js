@@ -8,22 +8,23 @@ const Category = require("./../model/courseCategoryModel");
 
 const router = express.Router();
 
+router.get("/", factoryController.getAll(Category));
+
+router.get("/:id", factoryController.getOne(Category));
+
 router.use(authController.protect);
 
-router
-  .route("/")
-  .get(factoryController.getAll(Category))
-  .post(
-    authController.restrictTo("admin", "instructor"),
-    categoryController.uploadCategoryPreviewImage.single("previewImage"),
-    categoryController.createSlug,
-    categoryController.reFormatPicture,
-    factoryController.create(Category)
-  );
+router.post(
+  "/",
+  authController.restrictTo("admin", "instructor"),
+  categoryController.uploadCategoryPreviewImage.single("previewImage"),
+  categoryController.createSlug,
+  categoryController.reFormatPicture,
+  factoryController.create(Category)
+);
 
 router
   .route("/:id")
-  .get(factoryController.getOne(Category))
   .patch(
     authController.restrictTo("admin"),
     categoryController.uploadCategoryPreviewImage.single("previewImage"),
