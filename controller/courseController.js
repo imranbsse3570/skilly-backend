@@ -32,8 +32,8 @@ exports.reFormatPicture = catchAsync(async (req, res, next) => {
     await sharp(req.file.buffer)
       .png()
       .toFile(`uploads/lectureCoverImages/${req.body.previewImage}`);
-    console.log("done at this point");
   }
+  console.log(req.body);
   next();
 });
 
