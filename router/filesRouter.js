@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.use("/users", express.static("uploads/users"));
 
+router.use("/lecturePreview", express.static("uploads/lectureCoverImages"));
+
 router.use(
   "/:imageType/:imageName/:width/:height",
   mediaController.resizeImages
