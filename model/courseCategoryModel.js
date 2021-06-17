@@ -27,9 +27,8 @@ courseCategorySchema.virtual("courses", {
   foreignField: "category",
 });
 
-courseCategorySchema.pre(/^find/, function (next) {
+courseCategorySchema.post(/^find/, function () {
   this.populate("courses");
-  next();
 });
 
 const Category = mongoose.model("Category", courseCategorySchema);
