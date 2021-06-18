@@ -5,8 +5,11 @@ const handlebars = require("handlebars");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
-const sharp = require("sharp");
 
+const {
+  cloudinaryUploader,
+  cloudinaryDestroy,
+} = require("./../util/cloudinaryUploader");
 const User = require("./../model/userModel");
 const sendEmail = require("./../util/sendEmail");
 const catchAsync = require("./../util/catchAsync");
@@ -34,8 +37,13 @@ exports.uploadProfilePicture = multer({
 exports.reFormatPicture = catchAsync(async (req, res, next) => {
   if (req.file) {
     const user = req.user;
-    req.filename = `user-${user._id.toString()}-${Date.now()}.png`;
-    await sharp(req.file.buffer).png().toFile(`uploads/users/${req.filename}`);
+    req.filename = `user-${user._id.toString()}-${Date.now()}`;
+
+    await cloudinaryUploader(
+      `uploads/users/${req.filename}`,
+      req.file.buffer,
+      "png"
+    );
   }
   next();
 });
@@ -282,8 +290,6 @@ exports.deleteMyAccount = catchAsync(async (req, res, next) => {
 
   const user = req.user;
 
-  console.log(user.password);
-
   if (!user.correctPassword(password, user.password)) {
     return next(new AppError("Password is incorrect", 401));
   }
@@ -369,9 +375,10 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   const user = req.user;
 
   if (req.filename) {
-    if (user.photo) {
-      await deleteFile(`uploads/users/${user.photo}`);
+    if (!user.photo.startsWith("default")) {
+      await cloudinaryDestroy(`uploads/users/${user.photo}`);
     }
+
     const photo = req.filename;
     user.photo = photo;
   }

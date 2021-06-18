@@ -7,6 +7,7 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const cors = require("cors");
 const compression = require("compression");
+const cloudinary = require("cloudinary").v2;
 
 const courseRouter = require("./router/courseRouter");
 const userRouter = require("./router/userRouter");
@@ -20,6 +21,12 @@ const codeController = require("./controller/codeExecuteController");
 const AppError = require("./util/appError");
 
 const app = express();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 app.use(helmet());
 

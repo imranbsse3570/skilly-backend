@@ -1,6 +1,6 @@
 const multer = require("multer");
-const sharp = require("sharp");
 
+const { cloudinaryUploader } = require("./../util/cloudinaryUploader");
 const catchAsync = require("./../util/catchAsync");
 const Category = require("./../model/courseCategoryModel");
 const generateUniqueSlug = require("./../util/generateUniqueSlug");
@@ -23,12 +23,13 @@ exports.uploadCategoryPreviewImage = multer({
 
 exports.reFormatPicture = catchAsync(async (req, res, next) => {
   if (req.file) {
-    req.body.previewImage = `category-preview-${
-      req.body.slug
-    }-${Date.now()}.png`;
-    await sharp(req.file.buffer)
-      .png()
-      .toFile(`uploads/categoryCoverImages/${req.body.previewImage}`);
+    req.body.previewImage = `category-preview-${req.body.slug}-${Date.now()}`;
+
+    await cloudinaryUploader(
+      `uploads/categories/${req.body.previewImage}`,
+      req.file.buffer,
+      "png"
+    );
   }
   next();
 });

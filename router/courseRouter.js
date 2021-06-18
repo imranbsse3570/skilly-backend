@@ -57,8 +57,8 @@ router
   )
   .patch(
     factoryController.validateUser(Course),
-    courseController.updateCourse,
     courseController.uploadCoursePreviewImage.single("previewImage"),
+    courseController.updateCourse,
     courseController.reFormatPicture,
     factoryController.updateOne(Course)
   );

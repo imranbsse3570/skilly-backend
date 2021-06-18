@@ -8,6 +8,7 @@
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.26.0",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
@@ -28,6 +29,7 @@
     "puppeteer": "^9.1.1",
     "sharp": "^0.28.2",
     "slugify": "^1.5.3",
+    "streamifier": "^0.1.1",
     "stripe": "^8.149.0",
     "validator": "^13.6.0",
     "xss-clean": "^0.1.1"
