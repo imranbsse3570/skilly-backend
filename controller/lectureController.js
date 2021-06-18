@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const fs = require("fs");
 
+const streamifier = require("streamifier");
 const path = require("path");
 const multer = require("multer");
 const { getVideoDurationInSeconds } = require("get-video-duration");
@@ -11,27 +12,14 @@ const Lecture = require("./../model/lectureModel");
 const Course = require("./../model/courseModel");
 const AppError = require("./../util/appError");
 const deleteFile = require("./../util/deleteFile");
+const {
+  cloudinaryVideoUploader,
+  cloudinaryDestroy,
+  cloudinaryURL,
+  cloudinaryGet,
+} = require("../util/cloudinaryUploader");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const { id } = req.params;
-
-    fs.mkdir(`uploads/lectures/${id}`, { recursive: true }, (err) => {
-      if (err) {
-        cb(new AppError("Error in uploading File", 400));
-      }
-    });
-
-    cb(null, `uploads/lectures/${id}`);
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split("/")[1];
-    const filenameWithExt = `${crypto
-      .randomBytes(15)
-      .toString("hex")}-${Date.now()}.${ext}`;
-    cb(null, filenameWithExt);
-  },
-});
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("video")) {
@@ -89,11 +77,17 @@ exports.addNewLectures = catchAsync(async (req, res, next) => {
     );
   }
 
-  req.body.source = req.file.filename;
+  req.body.source = `${crypto.randomBytes(15).toString("hex")}-${Date.now()}`;
 
-  const duration = Math.floor(
-    await getVideoDurationInSeconds(path.resolve(req.file.path))
+  const stream = await cloudinaryVideoUploader(
+    `uploads/lectures/${req.params.id}/${req.body.source}`,
+    req.file.buffer,
+    "mp4"
   );
+
+  const duration = Math.floor(await getVideoDurationInSeconds(stream));
+
+  req.body.source += ".mp4";
 
   req.body.duration = duration;
 
@@ -150,33 +144,50 @@ exports.checkingLecture = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.checkForLockedLectures = (req, res, next) => {
+exports.checkForLockedLectures = catchAsync(async (req, res, next) => {
   const { lectureFileName, id: courseId } = req.params;
   const lecture = req.lecture;
   if (!lecture.isLocked) {
-    const filePath = path.resolve(
-      `./uploads/lectures/${courseId}/${lectureFileName}`
+    const buffer = await cloudinaryGet(
+      `uploads/lectures/${courseId}/${lectureFileName}`,
+      { ...req.query, resource_type: "video" }
     );
-    res.sendFile(filePath);
-  } else {
-    next();
-  }
-};
 
-exports.checkForLockedLecturesAndDownload = (req, res, next) => {
-  const { lectureFileName, id: courseId } = req.params;
-  const lecture = req.lecture;
-  if (!lecture.isLocked) {
-    const filePath = path.resolve(
-      `./uploads/lectures/${courseId}/${lectureFileName}`
-    );
-    res.download(filePath, (err) =>
-      next(new AppError("Error in downloading File", 500))
-    );
+    streamifier.createReadStream(buffer).pipe(res);
+    // const filePath = path.resolve(
+    //   `./uploads/lectures/${courseId}/${lectureFileName}`
+    // );
+    // res.sendFile(filePath);
   } else {
     next();
   }
-};
+});
+
+exports.checkForLockedLecturesAndDownload = catchAsync(
+  async (req, res, next) => {
+    const { lectureFileName, id: courseId } = req.params;
+    const lecture = req.lecture;
+    if (!lecture.isLocked) {
+      const buffer = await cloudinaryGet(
+        `uploads/lectures/${courseId}/${lectureFileName}`,
+        { ...req.query, resource_type: "video" }
+      );
+
+      // streamifier.createReadStream(buffer).pipe(res);
+
+      // const filePath = path.resolve(
+      //   `./uploads/lectures/${courseId}/${lectureFileName}`
+      // );
+      // res.download(filePath, (err) =>
+      //   next(new AppError("Error in downloading File", 500))
+      // );
+
+      res.status(200).attachment(`name.mp4`).send(buffer);
+    } else {
+      next();
+    }
+  }
+);
 
 exports.checkingAccessToLectures = (req, res, next) => {
   const course = req.course;
@@ -198,7 +209,7 @@ exports.checkingAccessToLectures = (req, res, next) => {
   next();
 };
 
-exports.sendingLectureToClient = (req, res, next) => {
+exports.sendingLectureToClient = catchAsync(async (req, res, next) => {
   const { lectureFileName, id: courseId } = req.params;
 
   const range = req.headers.range;
@@ -206,29 +217,36 @@ exports.sendingLectureToClient = (req, res, next) => {
     res.status(400).send("Requires Range header");
   }
 
-  const videoPath = path.resolve(
-    `./uploads/lectures/${courseId}/${lectureFileName}`
+  const buffer = await cloudinaryGet(
+    `uploads/lectures/${courseId}/${lectureFileName}`,
+    { ...req.query, resource_type: "video" }
   );
-  const videoSize = fs.statSync(videoPath).size;
 
-  const CHUNK_SIZE = 10 ** 6;
-  const start = Number(range.replace(/\D/g, ""));
-  const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+  // const videoPath = path.resolve(
+  //   `./uploads/lectures/${courseId}/${lectureFileName}`
+  // );
+  // const videoSize = fs.statSync(videoPath).size;
 
-  const contentLength = end - start + 1;
+  // const CHUNK_SIZE = 10 ** 6;
+  // const start = Number(range.replace(/\D/g, ""));
+  // const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+
+  // const contentLength = end - start + 1;
   const headers = {
-    "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+    // "Content-Range": `bytes ${start}-${end}/${videoSize}`,
     "Accept-Ranges": "bytes",
-    "Content-Length": contentLength,
+    // "Content-Length": contentLength,
     "Content-Type": "video/mp4",
   };
 
   res.writeHead(206, headers);
 
-  const videoStream = fs.createReadStream(videoPath, { start, end });
+  // const videoStream = fs.createReadStream(videoPath, { start, end });
 
-  videoStream.pipe(res);
-};
+  streamifier.createReadStream(buffer).pipe(res);
+
+  // videoStream.pipe(res);
+});
 
 exports.downloadLectureToClient = (req, res, next) => {
   const { lectureFileName, id: courseId } = req.params;
@@ -305,7 +323,7 @@ exports.updateLecture = catchAsync(async (req, res, next) => {
   }
 
   if (req.file) {
-    await deleteFile(
+    await cloudinaryDestroy(
       `./uploads/lectures/${course._id}/${req.lectureFound.source}`
     );
 
@@ -321,6 +339,12 @@ exports.updateLecture = catchAsync(async (req, res, next) => {
     req.body.duration = duration;
 
     req.body.source = req.file.filename;
+
+    await cloudinaryUploader(
+      `uploads/lectures/${course._id}/${req.body.source}`,
+      req.file.buffer,
+      "mp4"
+    );
   }
 
   await lecture.save();
