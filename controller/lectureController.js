@@ -173,7 +173,7 @@ exports.checkForLockedLecturesAndDownload = catchAsync(
         { ...req.query, resource_type: "video" }
       );
 
-      // streamifier.createReadStream(buffer).pipe(res);
+      streamifier.createReadStream(buffer).pipe(res);
 
       // const filePath = path.resolve(
       //   `./uploads/lectures/${courseId}/${lectureFileName}`
@@ -248,15 +248,22 @@ exports.sendingLectureToClient = catchAsync(async (req, res, next) => {
   // videoStream.pipe(res);
 });
 
-exports.downloadLectureToClient = (req, res, next) => {
+exports.downloadLectureToClient = catchAsync(async (req, res, next) => {
   const { lectureFileName, id: courseId } = req.params;
-  const filePath = path.resolve(
-    `./uploads/lectures/${courseId}/${lectureFileName}`
-  );
-  res.download(filePath);
-};
+  // const filePath = path.resolve(
+  //   `./uploads/lectures/${courseId}/${lectureFileName}`
+  // );
+  // res.download(filePath);
 
-exports.deleteLecture = async (req, res, next) => {
+  const buffer = await cloudinaryGet(
+    `uploads/lectures/${courseId}/${lectureFileName}`,
+    { ...req.query, resource_type: "video" }
+  );
+
+  streamifier.createReadStream(buffer).pipe(res);
+});
+
+exports.deleteLecture = catchAsync(async (req, res, next) => {
   const course = req.document;
 
   let lectureFound = false;
@@ -285,14 +292,14 @@ exports.deleteLecture = async (req, res, next) => {
 
   course.totalDuration -= lecture.duration;
 
-  await deleteFile(`./uploads/lectures/${course._id}/${lecture.source}`);
+  await cloudinaryDestroy(`uploads/lectures/${course._id}/${lecture.source}`);
 
   await course.save();
 
   res.status(204).json({
     message: "lecture successfully deleted",
   });
-};
+});
 
 exports.checkingForTheLectureInCourse = (req, res, next) => {
   const course = req.document;
@@ -324,7 +331,7 @@ exports.updateLecture = catchAsync(async (req, res, next) => {
 
   if (req.file) {
     await cloudinaryDestroy(
-      `./uploads/lectures/${course._id}/${req.lectureFound.source}`
+      `uploads/lectures/${course._id}/${req.lectureFound.source}`
     );
 
     const duration = Math.floor(
@@ -340,7 +347,7 @@ exports.updateLecture = catchAsync(async (req, res, next) => {
 
     req.body.source = req.file.filename;
 
-    await cloudinaryUploader(
+    await cloudinaryVideoUploader(
       `uploads/lectures/${course._id}/${req.body.source}`,
       req.file.buffer,
       "mp4"
