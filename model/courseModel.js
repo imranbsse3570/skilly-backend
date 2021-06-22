@@ -77,6 +77,7 @@ const courseSchema = new mongoose.Schema({
   category: {
     type: mongoose.Schema.ObjectId,
     ref: "Category",
+    required: true,
   },
   slug: {
     type: String,
@@ -102,7 +103,7 @@ courseSchema.index(
 );
 
 courseSchema.pre(/^find/, function (next) {
-  this.populate("author").populate("category").populate("lectures");
+  this.populate("author").populate("lectures");
   next();
 });
 
