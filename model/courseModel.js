@@ -79,12 +79,25 @@ const courseSchema = new mongoose.Schema({
     ref: "Category",
     required: true,
   },
+  requirements: [
+    {
+      type: String,
+      unique: true,
+    },
+  ],
+  objectives: [
+    {
+      type: String,
+      unique: true,
+    },
+  ],
   slug: {
     type: String,
     unique: true,
   },
   quiz: {
     type: Quiz,
+    ref: "Quiz",
   },
   previewImage: {
     type: String,
