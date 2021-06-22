@@ -103,7 +103,7 @@ courseSchema.index(
 );
 
 courseSchema.pre(/^find/, function (next) {
-  this.populate("author").populate("lectures");
+  this.populate("author").populate("lectures").populate("category");
   next();
 });
 

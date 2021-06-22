@@ -5,6 +5,7 @@ const catchAsync = require("./../util/catchAsync");
 const Category = require("./../model/courseCategoryModel");
 const generateUniqueSlug = require("./../util/generateUniqueSlug");
 const AppError = require("./../util/appError");
+const APIFeatures = require("./../util/apiFeatures");
 
 const storage = multer.memoryStorage();
 
@@ -44,4 +45,33 @@ exports.createSlug = catchAsync(async (req, res, next) => {
 
   req.body.slug = generateUniqueSlug(categories, title);
   next();
+});
+
+exports.getAllCategories = catchAsync(async (req, res, next) => {
+  const features = new APIFeatures(Category.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const docs = await features.query.populate("courses");
+
+  res.status(200).json({
+    status: "Success",
+    results: docs.length,
+    data: { docs },
+  });
+});
+
+exports.getOneCategory = catchAsync(async (req, res, next) => {
+  const doc = await Category.findById(req.params.id);
+
+  if (!doc) {
+    return next(new AppError("doc not found", 404));
+  }
+
+  res.status(200).json({
+    status: "Success",
+    data: { doc },
+  });
 });

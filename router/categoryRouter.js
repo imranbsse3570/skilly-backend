@@ -8,9 +8,9 @@ const Category = require("./../model/courseCategoryModel");
 
 const router = express.Router();
 
-router.get("/", factoryController.getAll(Category));
+router.get("/", categoryController.getAllCategories);
 
-router.get("/:id", factoryController.getOne(Category));
+router.get("/:id", categoryController.getOneCategory);
 
 router.use(authController.protect);
 
