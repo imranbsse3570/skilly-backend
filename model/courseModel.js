@@ -38,6 +38,15 @@ const courseSchema = new mongoose.Schema({
     type: Number,
     required: [true, "Price is required"],
   },
+  comparePrice: {
+    type: Number,
+    validate: {
+      validator: function (compare) {
+        return compare > this.price;
+      },
+      message: "Compare Price must be greater than price",
+    },
+  },
   isPublished: {
     type: Boolean,
     default: false,
