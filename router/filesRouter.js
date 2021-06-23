@@ -6,9 +6,9 @@ const mediaController = require("./../controller/mediaController");
 
 const router = express.Router();
 
-router.use("/:imageType/:imageName", mediaController.resizeImages);
+router.get("/:imageType/:imageName", mediaController.resizeImages);
 
-router.use(
+router.get(
   "/:id/lectures/:lectureFileName",
   lectureController.gettingCourseData,
   lectureController.checkingLecture,
@@ -18,7 +18,7 @@ router.use(
   lectureController.sendingLectureToClient
 );
 
-router.use(
+router.get(
   "/download/:id/lectures/:lectureFileName",
   lectureController.gettingCourseData,
   lectureController.checkingLecture,

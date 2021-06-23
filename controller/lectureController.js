@@ -212,48 +212,23 @@ exports.checkingAccessToLectures = (req, res, next) => {
 exports.sendingLectureToClient = catchAsync(async (req, res, next) => {
   const { lectureFileName, id: courseId } = req.params;
 
-  const range = req.headers.range;
-  if (!range) {
-    res.status(400).send("Requires Range header");
-  }
+  const headers = {
+    "Accept-Ranges": "bytes",
+    "Content-Type": "video/mp4",
+  };
+
+  res.writeHead(206, headers);
 
   const buffer = await cloudinaryGet(
     `uploads/lectures/${courseId}/${lectureFileName}`,
     { ...req.query, resource_type: "video" }
   );
 
-  // const videoPath = path.resolve(
-  //   `./uploads/lectures/${courseId}/${lectureFileName}`
-  // );
-  // const videoSize = fs.statSync(videoPath).size;
-
-  // const CHUNK_SIZE = 10 ** 6;
-  // const start = Number(range.replace(/\D/g, ""));
-  // const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
-
-  // const contentLength = end - start + 1;
-  const headers = {
-    // "Content-Range": `bytes ${start}-${end}/${videoSize}`,
-    "Accept-Ranges": "bytes",
-    // "Content-Length": contentLength,
-    "Content-Type": "video/mp4",
-  };
-
-  res.writeHead(206, headers);
-
-  // const videoStream = fs.createReadStream(videoPath, { start, end });
-
   streamifier.createReadStream(buffer).pipe(res);
-
-  // videoStream.pipe(res);
 });
 
 exports.downloadLectureToClient = catchAsync(async (req, res, next) => {
   const { lectureFileName, id: courseId } = req.params;
-  // const filePath = path.resolve(
-  //   `./uploads/lectures/${courseId}/${lectureFileName}`
-  // );
-  // res.download(filePath);
 
   const buffer = await cloudinaryGet(
     `uploads/lectures/${courseId}/${lectureFileName}`,
