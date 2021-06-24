@@ -37,6 +37,6 @@ router
     factoryController.deleteOne(Category)
   );
 
-router.get("/:slug", factoryController.getOneBySlug(Category));
+router.get("/slug/:slug", factoryController.getOneBySlug(Category));
 
 module.exports = router;
