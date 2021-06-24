@@ -12,6 +12,8 @@ router.get("/", categoryController.getAllCategories);
 
 router.get("/:id", categoryController.getOneCategory);
 
+router.get("/slug/:slug", categoryController.getOneByCategoryBySlug);
+
 router.use(authController.protect);
 
 router.post(
@@ -36,7 +38,5 @@ router
     authController.restrictTo("admin"),
     factoryController.deleteOne(Category)
   );
-
-router.get("/slug/:slug", factoryController.getOneBySlug(Category));
 
 module.exports = router;

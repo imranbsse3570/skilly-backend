@@ -64,7 +64,22 @@ exports.getAllCategories = catchAsync(async (req, res, next) => {
 });
 
 exports.getOneCategory = catchAsync(async (req, res, next) => {
-  const doc = await Category.findById(req.params.id);
+  const doc = await Category.findById(req.params.id).populate("courses");
+
+  if (!doc) {
+    return next(new AppError("doc not found", 404));
+  }
+
+  res.status(200).json({
+    status: "Success",
+    data: { doc },
+  });
+});
+
+exports.getOneByCategoryBySlug = catchAsync(async (req, res, next) => {
+  const doc = await Category.findOne({ slug: req.params.slug }).populate(
+    "courses"
+  );
 
   if (!doc) {
     return next(new AppError("doc not found", 404));
