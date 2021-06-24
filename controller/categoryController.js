@@ -31,6 +31,8 @@ exports.reFormatPicture = catchAsync(async (req, res, next) => {
       req.file.buffer,
       "png"
     );
+
+    req.body.previewImage += ".png";
   }
   next();
 });
