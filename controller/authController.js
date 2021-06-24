@@ -370,7 +370,8 @@ exports.updateMyEmail = catchAsync(async (req, res, next) => {
 });
 
 exports.updateMe = catchAsync(async (req, res, next) => {
-  const { name } = req.body;
+  const { name, facebookLink, twitterLink, linkedInLink, youtubeLink } =
+    req.body;
 
   const user = req.user;
 
@@ -384,6 +385,10 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   }
 
   user.name = name;
+  user.facebookLink = facebookLink || user.facebookLink;
+  user.twitterLink = twitterLink || user.twitterLink;
+  user.linkedInLink = linkedInLink || user.linkedInLink;
+  user.youtubeLink = youtubeLink || user.youtubeLink;
 
   await user.save({ validateBeforeSave: false });
 

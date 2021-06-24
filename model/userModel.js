@@ -93,6 +93,18 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  facebookLink: {
+    type: String,
+  },
+  twitterLink: {
+    type: String,
+  },
+  linkedInLink: {
+    type: String,
+  },
+  youtubeLink: {
+    type: String,
+  },
   courses: [purchaseSchema],
 });
 
