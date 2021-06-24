@@ -51,8 +51,8 @@ exports.createCheckoutSession = catchAsync(async (req, res, next) => {
     customer_email: req.user.email,
     client_reference_id: req.params.courseId,
     mode: "payment",
-    success_url: "http://localhost:3000/coursesId/lectures/lectureId",
-    cancel_url: "http://localhost:3000/",
+    success_url: process.env.SUCCESS_URL,
+    cancel_url: process.env.CANCEL_URL,
   });
 
   res.status(200).json({
