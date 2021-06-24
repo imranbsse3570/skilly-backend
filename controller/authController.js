@@ -370,8 +370,14 @@ exports.updateMyEmail = catchAsync(async (req, res, next) => {
 });
 
 exports.updateMe = catchAsync(async (req, res, next) => {
-  const { name, facebookLink, twitterLink, linkedInLink, youtubeLink } =
-    req.body;
+  const {
+    name,
+    facebookLink,
+    twitterLink,
+    linkedInLink,
+    youtubeLink,
+    designation,
+  } = req.body;
 
   const user = req.user;
 
@@ -385,6 +391,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   }
 
   user.name = name;
+  user.designation = designation || user.designation;
   user.facebookLink = facebookLink || user.facebookLink;
   user.twitterLink = twitterLink || user.twitterLink;
   user.linkedInLink = linkedInLink || user.linkedInLink;

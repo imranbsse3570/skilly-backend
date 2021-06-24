@@ -105,6 +105,10 @@ const userSchema = new mongoose.Schema({
   youtubeLink: {
     type: String,
   },
+  designation: {
+    type: String,
+    default: "Student",
+  },
   courses: [purchaseSchema],
 });
 
