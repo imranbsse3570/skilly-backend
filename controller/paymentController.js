@@ -37,7 +37,11 @@ exports.createCheckoutSession = catchAsync(async (req, res, next) => {
           currency: "usd",
           product_data: {
             name: course.title,
-            images: ["https://picsum.photos/1600/900"],
+            images: [
+              `${req.protocol}://${req.get("host")}/files/coursePreview/${
+                course.previewImage
+              }`,
+            ],
           },
           unit_amount: course.price * 100,
         },
