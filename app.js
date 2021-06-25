@@ -11,6 +11,7 @@ const cloudinary = require("cloudinary").v2;
 
 const courseRouter = require("./router/courseRouter");
 const userRouter = require("./router/userRouter");
+const statRouter = require("./router/statsRouter");
 const categoryRouter = require("./router/categoryRouter");
 const globalErrorHandler = require("./controller/errorController");
 const filesRouter = require("./router/filesRouter");
@@ -65,6 +66,7 @@ app.use(compression());
 
 app.use("/files", filesRouter);
 app.use("/api/v1/executeCode", codeController.executingCode);
+app.use("/api/v1/stats", statRouter);
 
 app.use("/api/v1/courses", courseRouter);
 app.use("/api/v1/users", userRouter);
