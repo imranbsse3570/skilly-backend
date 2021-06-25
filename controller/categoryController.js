@@ -92,3 +92,14 @@ exports.getOneByCategoryBySlug = catchAsync(async (req, res, next) => {
     data: { doc },
   });
 });
+
+exports.getRandomCategory = catchAsync(async (req, res, next) => {
+  const document = await Category.random();
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      category: document,
+    },
+  });
+});

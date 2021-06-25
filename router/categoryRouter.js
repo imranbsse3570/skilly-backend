@@ -12,6 +12,8 @@ router.get("/", categoryController.getAllCategories);
 
 router.get("/:id", categoryController.getOneCategory);
 
+router.get("/random/category", categoryController.getRandomCategory);
+
 router.get("/slug/:slug", categoryController.getOneByCategoryBySlug);
 
 router.use(authController.protect);
