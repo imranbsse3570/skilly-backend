@@ -75,7 +75,9 @@ reviewSchema.post(/^findOneAnd/, function () {
 });
 
 reviewSchema.pre("find", function (next) {
-  this.populate({ path: "user" }).populate({ path: "course" });
+  this.populate({ path: "author", select: "name email" }).populate({
+    path: "course",
+  });
   next();
 });
 
