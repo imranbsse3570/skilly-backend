@@ -66,7 +66,7 @@ app.use(compression());
 
 app.use("/files", filesRouter);
 app.use("/api/v1/executeCode", codeController.executingCode);
-app.use("/api/v1/stats", statRouter);
+app.use("/api/v1/information", statRouter);
 
 app.use("/api/v1/courses", courseRouter);
 app.use("/api/v1/users", userRouter);

@@ -1,3 +1,4 @@
+const Course = require("./../model/courseModel");
 const catchAsync = require("./../util/catchAsync");
 const AppError = require("./../util/appError");
 const APIFeatures = require("./../util/apiFeatures");

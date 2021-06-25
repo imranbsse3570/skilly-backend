@@ -4,11 +4,12 @@ const catchAsync = require("../util/catchAsync");
 const Course = require("../model/courseModel");
 const User = require("../model/userModel");
 const Category = require("../model/courseCategoryModel");
+const reviewsController = require("../controller/reviewController");
 
 const router = express.Router();
 
 router.get(
-  "/",
+  "/stats",
   catchAsync(async (req, res, next) => {
     const courses = await Course.aggregate([{ $count: "courses" }]);
 
@@ -51,5 +52,7 @@ router.get(
     });
   })
 );
+
+router.get("/reviews", reviewsController.getReviewsForHomepage);
 
 module.exports = router;
