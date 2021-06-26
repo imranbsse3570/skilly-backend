@@ -25,6 +25,7 @@ router.patch(
   authController.updateMe
 );
 router.get("/myProfile", authController.myProfile, userController.getUser);
+router.get("/mycourses", authController.myProfile, authController.myCourses);
 
 router.use(authController.restrictTo("admin"));
 
