@@ -27,7 +27,9 @@ exports.addNewUser = (req, res) => {
 };
 
 exports.getUser = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id).populate({
+    path: "courses.courseId",
+  });
   if (!user) {
     return next(new AppError("User not found", 404));
   }
