@@ -10,7 +10,7 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
     .limitFields()
     .paginate();
 
-  const users = await features.query;
+  const users = await features.query.populate("createdCourses");
 
   res.status(200).json({
     status: "Success",
@@ -27,7 +27,7 @@ exports.addNewUser = (req, res) => {
 };
 
 exports.getUser = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id).populate("createdCourses");
   if (!user) {
     return next(new AppError("User not found", 404));
   }

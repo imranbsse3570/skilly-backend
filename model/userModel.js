@@ -23,93 +23,105 @@ const purchaseSchema = new mongoose.Schema({
   },
 });
 
-const userSchema = new mongoose.Schema({
-  photo: {
-    type: String,
-    default: "default.jpeg",
-  },
-  name: {
-    type: String,
-    minLength: 3,
-    maxLength: 40,
-    required: [true, "name is required"],
-  },
-  email: {
-    type: String,
-    required: [true, "email is required"],
-    validate: {
-      validator: validator.isEmail,
-      message: "Email format is incorrect",
+const userSchema = new mongoose.Schema(
+  {
+    photo: {
+      type: String,
+      default: "default.jpeg",
     },
-    unique: [true, "Email must be Unique"],
-  },
-  password: {
-    type: String,
-    required: true,
-    select: false,
-    validate: {
-      validator: function () {
-        return validator.matches(
-          this.password,
-          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/
-        );
+    name: {
+      type: String,
+      minLength: 3,
+      maxLength: 40,
+      required: [true, "name is required"],
+    },
+    email: {
+      type: String,
+      required: [true, "email is required"],
+      validate: {
+        validator: validator.isEmail,
+        message: "Email format is incorrect",
       },
-      message:
-        "Password must contain special character and uppercase lowercase and numbers",
+      unique: [true, "Email must be Unique"],
     },
-    min: 8,
-  },
-  confirmPassword: {
-    type: String,
-    required: true,
-    validate: {
-      validator: function () {
-        return this.password === this.confirmPassword;
+    password: {
+      type: String,
+      required: true,
+      select: false,
+      validate: {
+        validator: function () {
+          return validator.matches(
+            this.password,
+            /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,20}$/
+          );
+        },
+        message:
+          "Password must contain special character and uppercase lowercase and numbers",
       },
-      message: "Confirm password must be same is password",
+      min: 8,
     },
+    confirmPassword: {
+      type: String,
+      required: true,
+      validate: {
+        validator: function () {
+          return this.password === this.confirmPassword;
+        },
+        message: "Confirm password must be same is password",
+      },
+    },
+    role: {
+      type: String,
+      enum: ["student", "instructor", "admin"],
+      default: "student",
+    },
+    status: {
+      type: String,
+      enum: ["verified", "not-verified", "deactivated"],
+      default: "not-verified",
+    },
+    passwordChangedAt: Date,
+    verifyAccountToken: {
+      type: String,
+    },
+    resetPasswordToken: {
+      type: String,
+    },
+    resetTokenExpires: {
+      type: Date,
+    },
+    numOfSubscribedCourses: {
+      type: Number,
+      default: 0,
+    },
+    facebookLink: {
+      type: String,
+    },
+    twitterLink: {
+      type: String,
+    },
+    linkedInLink: {
+      type: String,
+    },
+    youtubeLink: {
+      type: String,
+    },
+    designation: {
+      type: String,
+      default: "Student",
+    },
+    courses: [purchaseSchema],
   },
-  role: {
-    type: String,
-    enum: ["student", "instructor", "admin"],
-    default: "student",
-  },
-  status: {
-    type: String,
-    enum: ["verified", "not-verified", "deactivated"],
-    default: "not-verified",
-  },
-  passwordChangedAt: Date,
-  verifyAccountToken: {
-    type: String,
-  },
-  resetPasswordToken: {
-    type: String,
-  },
-  resetTokenExpires: {
-    type: Date,
-  },
-  numOfSubscribedCourses: {
-    type: Number,
-    default: 0,
-  },
-  facebookLink: {
-    type: String,
-  },
-  twitterLink: {
-    type: String,
-  },
-  linkedInLink: {
-    type: String,
-  },
-  youtubeLink: {
-    type: String,
-  },
-  designation: {
-    type: String,
-    default: "Student",
-  },
-  courses: [purchaseSchema],
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+userSchema.virtual("createdCourses", {
+  ref: "Course",
+  localField: "_id",
+  foreignField: "author",
 });
 
 userSchema.pre("save", async function (next) {

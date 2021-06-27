@@ -29,6 +29,7 @@ exports.uploadCoursePreviewImage = multer({
 
 exports.reFormatPicture = catchAsync(async (req, res, next) => {
   if (req.file) {
+    console.log(req.file);
     req.body.previewImage = `lecture-preview-${req.body.slug}-${Date.now()}`;
 
     await cloudinaryUploader(
@@ -37,10 +38,8 @@ exports.reFormatPicture = catchAsync(async (req, res, next) => {
       "png"
     );
 
-    if (!req.document.previewImage.startsWith("default")) {
-      await cloudinaryDestroy(
-        `uploads/coursePreview/${req.document.previewImage}`
-      );
+    if (!req.body.previewImage.startsWith("default")) {
+      await cloudinaryDestroy(`uploads/coursePreview/${req.body.previewImage}`);
     }
   }
   next();

@@ -42,7 +42,7 @@ const courseSchema = new mongoose.Schema({
     type: Number,
     validate: {
       validator: function (compare) {
-        return compare > this.price;
+        return compare >= this.price;
       },
       message: "Compare Price must be greater than price",
     },
