@@ -51,21 +51,12 @@ const courseSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  languages: [
-    {
-      type: String,
-      enum: [
-        "English",
-        "Urdu",
-        "German",
-        "Dutch",
-        "Italian",
-        "Hindi",
-        "Spanish",
-      ],
-      default: "English",
-    },
-  ],
+  languages: {
+    type: String,
+    enum: ["English", "Urdu", "German", "Dutch", "Italian", "Hindi", "Spanish"],
+    default: "English",
+  },
+
   image: {
     type: String,
   },
