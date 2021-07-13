@@ -318,16 +318,20 @@ exports.updateLecture = catchAsync(async (req, res, next) => {
 
     await course.save();
 
-    req.body.duration = duration;
+    lecture.duration = duration;
 
-    req.body.source = req.file.filename;
+    lecture.source = req.file.filename;
 
     await cloudinaryVideoUploader(
-      `uploads/lectures/${course._id}/${req.body.source}`,
+      `uploads/lectures/${course._id}/${lecture.source}`,
       req.file.buffer,
       "mp4"
     );
   }
+
+  lecture.title = req.body.title || lecture.title;
+  lecture.isLocked = req.body.isLocked || lecture.isLocked;
+  lecture.description = req.body.description || lecture.description;
 
   await lecture.save();
 
