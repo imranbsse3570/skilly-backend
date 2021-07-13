@@ -193,7 +193,7 @@ exports.checkingAccessToLectures = (req, res, next) => {
   const course = req.course;
   const user = req.user;
 
-  if (course.author.toString() !== user._id.toString()) {
+  if (course.author._id.toString() !== user._id.toString()) {
     if (user.role !== "admin") {
       if (!checkingForMatchingCourse(user.courses, course._id)) {
         return next(
