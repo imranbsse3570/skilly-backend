@@ -154,10 +154,6 @@ exports.checkForLockedLectures = catchAsync(async (req, res, next) => {
     );
 
     streamifier.createReadStream(buffer).pipe(res);
-    // const filePath = path.resolve(
-    //   `./uploads/lectures/${courseId}/${lectureFileName}`
-    // );
-    // res.sendFile(filePath);
   } else {
     next();
   }
@@ -310,7 +306,9 @@ exports.updateLecture = catchAsync(async (req, res, next) => {
     );
 
     const duration = Math.floor(
-      await getVideoDurationInSeconds(path.resolve(req.file.path))
+      await getVideoDurationInSeconds(
+        streamifier.createReadStream(req.file.buffer)
+      )
     );
 
     course.totalDuration -= lecture.duration;
@@ -320,13 +318,15 @@ exports.updateLecture = catchAsync(async (req, res, next) => {
 
     lecture.duration = duration;
 
-    lecture.source = req.file.filename;
+    lecture.source = `${crypto.randomBytes(15).toString("hex")}-${Date.now()}`;
 
     await cloudinaryVideoUploader(
       `uploads/lectures/${course._id}/${lecture.source}`,
       req.file.buffer,
       "mp4"
     );
+
+    lecture.source += ".mp4";
   }
 
   lecture.title = req.body.title || lecture.title;
